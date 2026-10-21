@@ -1,0 +1,47 @@
+/* Light and dark color variables. The page switches by setting data-theme. */
+:root,
+:root[data-theme='light'] {
+  --bg: #f6f1e9;
+  --card: #fffdf9;
+  --text: #14232b;
+  --text-quiet: #5b6b72;
+  --accent: #0f4c5c;
+  --accent-bg: #0f4c5c;
+  --accent-text: #ffffff;
+  --glow: none;
+  --circle-1: #f4c7a6;
+  --circle-2: #8cc3c7;
+  --line: #0f4c5c;
+  --zone: rgba(15, 76, 92, 0.1);
+  --dot: #0f4c5c;
+  --success: #22c55e;
+  --border: rgba(20, 35, 43, 0.1);
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0b1020;
+  --card: #131a2e;
+  --text: #eaeefb;
+  --text-quiet: #9aa4c4;
+  --accent: #7d9bff;
+  --accent-bg: linear-gradient(135deg, #3d8bff, #9b5cff);
+  --accent-text: #ffffff;
+  --glow: 0 0 24px rgba(125, 110, 255, 0.45);
+  --circle-1: rgba(155, 92, 255, 0.25);
+  --circle-2: rgba(61, 139, 255, 0.22);
+  --line: #8a7dff;
+  --zone: rgba(138, 125, 255, 0.14);
+  --dot: #b9c7ff;
+  --success: #22c55e;
+  --border: rgba(234, 238, 251, 0.1);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  transition: background 0.3s, color 0.3s;
+}

@@ -5,3 +5,7 @@
 .env
 .env.*
 !.env.example
+
+# Downloaded libraries and the packaged site (both are re-created by npm)
+node_modules/
+dist/
