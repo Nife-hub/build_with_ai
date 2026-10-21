@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PitchPal Technical Blueprint</title>
+<style>
+:root{
+  --bg:#f6f1e9; --card:#fffdf9; --ink:#14232b; --muted:#5b6a70; --line:#e6ddd0;
+  --accent:#0f4c5c; --accent-ink:#ffffff; --accent-soft:#dcebec; --peach:#f4c7a6;
+  --good:#1f9d63; --good-soft:#e0f4ea; --warn:#b8622b; --warn-soft:#fbebdf;
+  --node:#fffdf9; --hl:#0f4c5c; --hl-soft:#cfe5e7; --grad:linear-gradient(90deg,#0f4c5c,#0f4c5c);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1020; --card:#131a2e; --ink:#eaeefb; --muted:#9aa4c0; --line:#2a3452;
+    --accent:#6c7cff; --accent-ink:#ffffff; --accent-soft:#1d2550; --peach:#a35bff;
+    --good:#4fd39a; --good-soft:#123528; --warn:#f0a36b; --warn-soft:#382718;
+    --node:#131a2e; --hl:#8b7bff; --hl-soft:#262c5e; --grad:linear-gradient(90deg,#3d8bff,#9b5cff);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1020; --card:#131a2e; --ink:#eaeefb; --muted:#9aa4c0; --line:#2a3452;
+  --accent:#6c7cff; --accent-ink:#ffffff; --accent-soft:#1d2550; --peach:#a35bff;
+  --good:#4fd39a; --good-soft:#123528; --warn:#f0a36b; --warn-soft:#382718;
+  --node:#131a2e; --hl:#8b7bff; --hl-soft:#262c5e; --grad:linear-gradient(90deg,#3d8bff,#9b5cff);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:900px;margin:0 auto;padding:40px 16px 80px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--warn);background:var(--warn-soft);padding:3px 10px;border-radius:99px}
+h1{font-size:2.3rem;line-height:1.1;margin:12px 0 4px;letter-spacing:-.02em}
+.lede{color:var(--muted);margin:8px 0 20px}
+button{font:inherit;cursor:pointer}
+.theme{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 24px;margin:18px 0}
+h2{font-size:1.25rem;margin:0 0 10px;letter-spacing:-.01em}
+h3{font-size:1.02rem;margin:16px 0 6px}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+code{background:var(--accent-soft);padding:1px 6px;border-radius:6px}
+.ref{font-size:13px;color:var(--muted)}
+.pieces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+@media (max-width:640px){.pieces{grid-template-columns:1fr}}
+.piece{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--bg)}
+.piece b{display:block;margin-bottom:4px}
+.piece span{font-size:14px;color:var(--muted)}
+/* diagram */
+.diagram{width:100%;height:auto;display:block;margin:6px 0}
+.diagram .box{fill:var(--node);stroke:var(--line);stroke-width:1.5;transition:fill .2s,stroke .2s}
+.diagram .lbl{fill:var(--ink);font:600 14px system-ui,sans-serif}
+.diagram .sub{fill:var(--muted);font:12px system-ui,sans-serif}
+.diagram .frame{fill:none;stroke:var(--muted);stroke-dasharray:6 5;stroke-width:1.2}
+.diagram .framelbl{fill:var(--muted);font:600 12px system-ui,sans-serif;letter-spacing:.05em}
+.diagram .arrow{fill:none;stroke:var(--muted);stroke-width:1.6;transition:stroke .2s,stroke-width .2s}
+.diagram .dev{fill:var(--accent-soft);stroke:none}
+.diagram g.on .box{fill:var(--hl-soft);stroke:var(--hl);stroke-width:2.5}
+.diagram .arrow.on{stroke:var(--hl);stroke-width:3}
+#arrowhead path{fill:var(--muted)}
+#arrowhead-on path{fill:var(--hl)}
+/* stepper */
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px}
+.steps button{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:5px 11px}
+.steps button[aria-pressed="true"]{background:var(--grad);background-color:var(--accent);color:var(--accent-ink);border-color:transparent}
+.stepbox{border-left:5px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 16px}
+.stepbox p{margin:4px 0}
+.nav{display:flex;gap:8px;margin-top:10px}
+.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font-size:14px}
+/* details */
+details{border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0;background:var(--bg)}
+summary{cursor:pointer;font-weight:600}
+summary .mono{font-weight:400;color:var(--muted);margin-left:6px}
+details p{margin:8px 0 4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.tablewrap{overflow-x:auto}
+pre{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto;font-size:13px;line-height:1.5;margin:8px 0}
+ul{padding-left:20px}
+li{margin:4px 0}
+.ask{border:2px solid var(--warn);background:var(--warn-soft)}
+.ask h2{color:var(--warn)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.sw{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.sw i{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:inline-block}
+/* meter demo */
+.meter{position:relative;height:150px;border-radius:16px;background:var(--bg);border:1px solid var(--line);margin:10px 0;overflow:hidden}
+.meter .zone{position:absolute;left:0;right:0;top:50%;height:24px;transform:translateY(-50%);background:var(--good-soft)}
+.meter .tline{position:absolute;left:8%;right:8%;top:50%;height:3px;background:var(--accent);transform:translateY(-50%);border-radius:3px}
+.meter .dot{position:absolute;left:50%;width:26px;height:26px;border-radius:50%;background:var(--grad);background-color:var(--accent);transform:translate(-50%,-50%);transition:top .15s}
+.meter .dot.hit{background:#22c55e}
+.meter .msg{position:absolute;left:12px;bottom:8px;font-size:13px;color:var(--muted)}
+input[type=range]{width:100%}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <span class="tag">Approved</span>
+    <h1>PitchPal: how it's built</h1>
+    <p class="lede">The technical blueprint behind <a href="prd.html" style="color:var(--accent)">your PRD</a>. Canonical version: <code>devpost/spec.md</code>.</p>
+  </div>
+  <button class="theme" id="themeBtn" aria-label="Toggle light or dark theme">◐ Theme</button>
+</header>
+
+<section class="card">
+  <h2>How this works, in plain language</h2>
+  <p>PitchPal is a <b>web app</b> that runs entirely inside your browser, on a laptop or phone. There's no server and no database. It's built from three kinds of pieces:</p>
+  <div class="pieces">
+    <div class="piece"><b>Screens: React</b><span>Five screens (Opening, Home, Practice, Pick a note, Results) built from small reusable <i>components</i> like the dot and the try counter.</span></div>
+    <div class="piece"><b>Sound engine: Web Audio</b><span>Built into the browser. It plays a soft tone at an exact pitch and listens to the mic many times a second.</span></div>
+    <div class="piece"><b>Pitch detector: pitchy</b><span>A free library. For each slice of sound it returns the <b>pitch</b> and a <b>clarity score</b> from 0 to 1.</span></div>
+  </div>
+  <p>A slice of sound only counts if it's <b>loud enough</b> and <b>clear enough</b>. PitchPal then compares the pitch to the target, counting the same note an octave lower or higher as a match. Higher puts the dot above the line, lower puts it below, and further off puts it further away. Staying in the zone for 3 seconds counts as a hit. The round and Pick a note share <b>one note engine</b> (tries, hold, Hear it again), so the hard part is written once. Nothing is saved: scores live in memory.</p>
+  <p class="ref">Why this shape: the browser can already play sound, use the mic, and draw screens. A server or database would add pieces to build and break without making the dot any better.</p>
+</section>
+
+<section class="card">
+  <h2>Walk the core journey through the system</h2>
+  <p class="ref">Step through <code>prd.md &gt; The Core Journey</code>. The pieces involved light up in the diagram.</p>
+  <svg class="diagram" viewBox="0 0 760 420" role="img" aria-labelledby="dgT">
+    <title id="dgT">PitchPal architecture: React screens, the round, the pitch meter, and the audio modules inside the browser, with the microphone and speaker outside it</title>
+    <defs>
+      <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+      <marker id="arrowhead-on" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"/></marker>
+    </defs>
+    <rect class="frame" x="12" y="18" width="736" height="312" rx="18"/>
+    <text class="framelbl" x="28" y="38">YOUR BROWSER (LAPTOP OR PHONE)</text>
+
+    <g id="n-app"><rect class="box" x="30" y="50" width="200" height="56" rx="12"/><text class="lbl" x="44" y="74">App</text><text class="sub" x="44" y="94">screen switcher · theme</text></g>
+    <g id="n-practice"><rect class="box" x="280" y="50" width="200" height="56" rx="12"/><text class="lbl" x="294" y="74">Practice · Pick a note</text><text class="sub" x="294" y="94">which note next · scores</text></g>
+    <g id="n-meter"><rect class="box" x="530" y="50" width="200" height="56" rx="12"/><text class="lbl" x="544" y="74">NotePanel + PitchMeter</text><text class="sub" x="544" y="94">note name · line + dot</text></g>
+
+    <g id="n-screens"><rect class="box" x="30" y="150" width="200" height="56" rx="12"/><text class="lbl" x="44" y="174">Opening · Home · Results</text><text class="sub" x="44" y="194">Results uses scoring.js</text></g>
+    <g id="n-engine"><rect class="box" x="280" y="150" width="200" height="56" rx="12"/><text class="lbl" x="294" y="174">Note engine</text><text class="sub" x="294" y="194">useNoteAttempt: tries · hold</text></g>
+    <g id="n-notes"><rect class="box" x="530" y="150" width="200" height="56" rx="12"/><text class="lbl" x="544" y="174">notes.js</text><text class="sub" x="544" y="194">how far off · octave rule</text></g>
+
+    <g id="n-mic"><rect class="box" x="30" y="250" width="200" height="56" rx="12"/><text class="lbl" x="44" y="274">mic.js</text><text class="sub" x="44" y="294">ask for + open the mic</text></g>
+    <g id="n-pitch"><rect class="box" x="280" y="250" width="200" height="56" rx="12"/><text class="lbl" x="294" y="274">pitch.js + pitchy</text><text class="sub" x="294" y="294">loud? clear? → pitch</text></g>
+    <g id="n-tone"><rect class="box" x="530" y="250" width="200" height="56" rx="12"/><text class="lbl" x="544" y="274">tone.js</text><text class="sub" x="544" y="294">play / stop the note</text></g>
+
+    <g id="n-micdev"><rect class="box dev" x="30" y="362" width="200" height="44" rx="22"/><text class="lbl" x="58" y="389">🎤  Microphone</text></g>
+    <g id="n-spk"><rect class="box dev" x="530" y="362" width="200" height="44" rx="22"/><text class="lbl" x="568" y="389">🔊  Speaker</text></g>
+
+    <path id="a-app-practice" class="arrow" d="M230 78 H274" marker-end="url(#arrowhead)"/>
+    <path id="a-practice-meter" class="arrow" d="M480 78 H524" marker-end="url(#arrowhead)"/>
+    <path id="a-app-screens" class="arrow" d="M130 106 V144" marker-end="url(#arrowhead)"/>
+    <path id="a-practice-engine" class="arrow" d="M370 106 V144" marker-end="url(#arrowhead)"/>
+    <path id="a-engine-practice" class="arrow" d="M395 150 V112" marker-end="url(#arrowhead)"/>
+    <path id="a-engine-notes" class="arrow" d="M480 170 H524" marker-end="url(#arrowhead)"/>
+    <path id="a-engine-tone" class="arrow" d="M480 195 H505 V278 H524" marker-end="url(#arrowhead)"/>
+    <path id="a-tone-spk" class="arrow" d="M630 306 V356" marker-end="url(#arrowhead)"/>
+    <path id="a-micdev-mic" class="arrow" d="M130 362 V312" marker-end="url(#arrowhead)"/>
+    <path id="a-mic-pitch" class="arrow" d="M230 278 H274" marker-end="url(#arrowhead)"/>
+    <path id="a-pitch-engine" class="arrow" d="M380 250 V212" marker-end="url(#arrowhead)"/>
+  </svg>
+
+  <div class="steps" id="steps" role="group" aria-label="Journey steps"></div>
+  <div class="stepbox" aria-live="polite">
+    <p><b id="stTitle"></b></p>
+    <p id="stDesc"></p>
+    <p class="ref" id="stRef"></p>
+  </div>
+  <div class="nav"><button id="prev">← Back</button><button id="next">Next →</button></div>
+</section>
+
+<section class="card">
+  <h2>Try the dot logic</h2>
+  <p class="ref">A tiny simulation of <code>PitchMeter</code> + <code>notes.js</code>. Slide to "sing" higher or lower. Green band = the starting "on the line" zone (±0.4 semitone). The note shown is A3. Singing it an octave up or down counts the same. <b>This is a demo of the idea, not the real app.</b></p>
+  <div class="meter" id="meter"><div class="zone"></div><div class="tline"></div><div class="dot" id="dot"></div><div class="msg" id="mmsg"></div><div style="position:absolute;right:14px;top:10px;font-weight:700;font-size:1.3rem">A3</div></div>
+  <label for="off" class="ref">How far off you're singing (in semitones, one piano key each)</label>
+  <input type="range" id="off" min="-4" max="4" step="0.1" value="-1.2">
+</section>
+
+<section class="card">
+  <h2>Stack</h2>
+  <ul>
+    <li><b>React</b> (current version from Vite, expected 19.x): <i>your choice</i>, to learn React. Tradeoff accepted: installing Node.js once, plus more files. <a href="https://react.dev/learn" style="color:var(--accent)">react.dev</a></li>
+    <li><b>Vite</b> (expected 7.x): creates, runs and packages the React project. <a href="https://vite.dev/guide/" style="color:var(--accent)">vite.dev</a></li>
+    <li><b>Node.js</b> (LTS, 22+): runs Vite on your laptop. It isn't part of the finished app. <a href="https://nodejs.org/" style="color:var(--accent)">nodejs.org</a></li>
+    <li><b>pitchy</b> (4.x): pitch + clarity. Recommended; you accepted it. <a href="https://github.com/ianprime0509/pitchy" style="color:var(--accent)">GitHub</a></li>
+    <li><b>Web Audio API + getUserMedia</b>: built into the browser. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" style="color:var(--accent)">MDN docs</a></li>
+    <li><b>JavaScript, plain CSS variables, Git + GitHub</b>: implementation details.</li>
+  </ul>
+  <p class="ref">Not verified online while writing this: exact versions, Vite's minimum Node version, and pitchy's function names. These get checked in the first build step.</p>
+</section>
+
+<section class="card">
+  <h2>Where it runs and how someone tries it</h2>
+  <ul>
+    <li><b>While building:</b> <code>npm install</code> once, then <code>npm run dev</code> → open <code>http://localhost:5173</code> in Chrome.</li>
+    <li><b>Online (your choice):</b> Netlify free plan, connected to GitHub. Build <code>npm run build</code>, publish <code>dist</code>. You get an <code>https://…netlify.app</code> link, which phones need before they'll allow the mic. Set up in <code>6-ship</code>.</li>
+    <li><b>Required for submission:</b> a short demo video + a public GitHub repo. The link is a bonus; it doesn't replace either one.</li>
+    <li><b>Demo:</b> Opening → Home → Start → allow mic → listen (note name shown) → sing off so the dot moves → adjust until it turns green and "You nailed it, well done!" appears → finish → results. If there's time: Pick a note.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Look and feel</h2>
+  <p class="ref">Carried from <code>prd.md &gt; Look and Feel</code> and your reference image.</p>
+  <div class="swatches">
+    <span class="sw"><i style="background:#f6f1e9"></i>cream</span>
+    <span class="sw"><i style="background:#0f4c5c"></i>deep teal</span>
+    <span class="sw"><i style="background:#f4c7a6"></i>peach</span>
+    <span class="sw"><i style="background:#8cc3c7"></i>soft teal</span>
+    <span class="sw"><i style="background:#0b1020"></i>navy</span>
+    <span class="sw"><i style="background:linear-gradient(90deg,#3d8bff,#9b5cff)"></i>blue→purple</span>
+    <span class="sw"><i style="background:#22c55e"></i>hit green</span>
+  </div>
+  <p>Plus Jakarta Sans (bold headings), rounded cards, pill buttons, soft background circles, and a waveform motif. On the Practice screen, the line and dot take most of the space and everything else stays small. The theme starts on your device's setting and isn't remembered. Copy is plain and encouraging, with no "cents."</p>
+</section>
+
+<section class="card">
+  <h2>Components</h2>
+  <p class="ref">Tap one to see what it does and which PRD heading it serves.</p>
+  <details><summary>App <span class="mono">src/App.jsx</span></summary><p>Which screen is showing, the last round's results, the 2.5 s opening timer.</p><p class="ref">prd.md › Opening and Home · The Core Journey</p></details>
+  <details><summary>OpeningScreen <span class="mono">screens/OpeningScreen.jsx</span></summary><p>Name and tagline with the waveform motif.</p><p class="ref">prd.md › Opening and Home</p></details>
+  <details><summary>HomeScreen <span class="mono">screens/HomeScreen.jsx</span></summary><p>The three steps, Start, Pick a note, and the mic-refused message. Both buttons wake the sound engine and ask for the mic.</p><p class="ref">prd.md › Opening and Home · Pick a Note · States and Boundaries</p></details>
+  <details><summary>Note engine <span class="mono">hooks/useNoteAttempt.js</span></summary><p>A React <i>hook</i>: a reusable bundle of behavior that screens plug in. It runs one note from start to finish: listen → 3 counted tries of 5 s → 3 s hold → hit, or Try again / Skip. It handles silence, Hear it again (no try used) and pausing. Shared by both practice screens.</p><p class="ref">prd.md › Playing the Note · Note Name and Hear It Again · Hitting the Note · Tries, Retry and Skip</p></details>
+  <details><summary>PracticeScreen <span class="mono">screens/PracticeScreen.jsx</span></summary><p>Shuffles the 5 round notes, runs each through the engine, and keeps the round record. Shows 2/5 and a small Back button that opens LeaveDialog.</p><p class="ref">prd.md › The Core Journey · Leaving a Round Early</p></details>
+  <details><summary>PickNoteScreen <span class="mono">screens/PickNoteScreen.jsx</span></summary><p>Keys + engine + a running score ("4 nailed out of 6 notes"). Back stops sound and mic, shows the score card, then Home. A note left halfway isn't counted.</p><p class="ref">prd.md › Pick a Note</p></details>
+  <details><summary>NotePanel <span class="mono">components/NotePanel.jsx</span></summary><p>The shared middle: note name ("C4") with a one-time hint, Listen/Sing cue, try counter, PitchMeter, how-close message, Hear it again, Try again / Skip.</p><p class="ref">prd.md › Note Name and Hear It Again · Tries, Retry and Skip</p></details>
+  <details><summary>PitchMeter <span class="mono">components/PitchMeter.jsx</span></summary><p>Target line + dot, up to 3 semitones either way (pinned beyond that). Green on a hit, hidden when no voice is heard.</p><p class="ref">prd.md › Live Pitch Feedback (the dot) · Hitting the Note</p></details>
+  <details><summary>NoteKeys <span class="mono">components/NoteKeys.jsx</span></summary><p>8 labeled white keys, C4 to C5. Wraps to two rows on narrow phones.</p><p class="ref">prd.md › Pick a Note</p></details>
+  <details><summary>LeaveDialog <span class="mono">components/LeaveDialog.jsx</span></summary><p>"Leave this round? Your progress won't be saved." Keep practicing (main) / Leave (quieter).</p><p class="ref">prd.md › Leaving a Round Early</p></details>
+  <details><summary>ResultsScreen <span class="mono">screens/ResultsScreen.jsx</span></summary><p>"3/5 on pitch, mostly sang low," Play again, Home.</p><p class="ref">prd.md › End-of-Round Score</p></details>
+  <details><summary>ThemeToggle <span class="mono">components/ThemeToggle.jsx</span></summary><p>Light/dark switch.</p><p class="ref">prd.md › Theme Toggle</p></details>
+  <details><summary>Tone player <span class="mono">audio/tone.js</span></summary><p>Soft triangle-wave tone with fade in/out, about 2.5 s. It can be stopped early.</p><p class="ref">prd.md › Playing the Note</p></details>
+  <details><summary>Microphone <span class="mono">audio/mic.js</span></summary><p>Asks for the mic with echo cancelling, noise removal and auto-volume off (they distort pitch). Reports allowed or refused, and releases it on leaving.</p><p class="ref">prd.md › States and Boundaries</p></details>
+  <details><summary>Pitch reader <span class="mono">audio/pitch.js</span></summary><p>Loudness ≥ MIN_VOLUME, clarity ≥ MIN_CLARITY, and pitch 70–1100 Hz → returns a pitch. Otherwise "not singing."</p><p class="ref">prd.md › Live Pitch Feedback · States and Boundaries (silence)</p></details>
+  <details><summary>Note helpers <span class="mono">lib/notes.js</span></summary><p>Note list (round G3–D4, keys C4–C5), <code>semitonesOff = 12 × log2(sung ÷ target)</code>, the <b>octave rule</b> (compare to the target ÷ 2, the target, and the target × 2, and use the closest), ZONE (±0.4 to start), and smoothing (middle of the last 5 readings).</p><p class="ref">prd.md › Live Pitch Feedback · Product Decisions</p></details>
+  <details><summary>Scoring <span class="mono">lib/scoring.js</span></summary><p>Passes out of however many notes were finished, plus "mostly sang low / high." Used by Results and the Pick a note score card.</p><p class="ref">prd.md › End-of-Round Score · Pick a Note</p></details>
+</section>
+
+<section class="card">
+  <h2>Where data lives</h2>
+  <p class="ref">All in memory while the page is open. Reload or close → it's gone, by design.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Data</th><th>Lives in</th><th>Changes when</th><th>Come back later</th></tr>
+    <tr><td>Current screen</td><td>App</td><td>timer, Start, end of round</td><td>Opening again</td></tr>
+    <tr><td>Theme</td><td>App</td><td>toggle</td><td>device setting</td></tr>
+    <tr><td>Round notes, note #</td><td>PracticeScreen</td><td>round start, each note</td><td>new round</td></tr>
+    <tr><td>Phase, try #, live "how far off", hold timer</td><td>Note engine</td><td>~60× a second + buttons</td><td>gone</td></tr>
+    <tr><td>Round record</td><td>PracticeScreen → App</td><td>after each note</td><td>gone</td></tr>
+    <tr><td>Pick a note record</td><td>PickNoteScreen</td><td>after each finished note</td><td>gone</td></tr>
+    <tr><td>Seen the "4 = middle" hint</td><td>App</td><td>first note name shown</td><td>shows again</td></tr>
+  </table></div>
+</section>
+
+<section class="card">
+  <h2>File structure</h2>
+<pre>build_with_ai/                 # = the GitHub repository
+├── index.html                 # the page React draws into; loads the font
+├── package.json               # scripts + libraries (react, pitchy)
+├── vite.config.js
+├── public/favicon.svg
+├── src/
+│   ├── main.jsx               # starting point
+│   ├── App.jsx                # screen switcher, theme, opening timer
+│   ├── screens/               # Opening, Home, Practice, PickNote, Results
+│   ├── hooks/                 # useNoteAttempt.js: the shared note engine
+│   ├── components/            # NotePanel, PitchMeter, NoteKeys, LeaveDialog,
+│   │                          #   ThemeToggle, Waveform
+│   ├── audio/                 # tone.js, mic.js, pitch.js
+│   ├── lib/                   # notes.js, scoring.js
+│   └── styles/                # theme.css, app.css
+├── devpost/                   # planning docs
+├── .gitignore                 # skips node_modules/ and dist/
+└── README.md</pre>
+</section>
+
+<section class="card">
+  <h2>Where it could break, and what you'll see</h2>
+  <ul>
+    <li><b>Mic refused</b> → "PitchPal needs your microphone to hear you sing…" No round starts.</li>
+    <li><b>Silence or too quiet</b> → dot hidden, "I can't hear you, try singing louder." The try doesn't count.</li>
+    <li><b>Jittery dot / room noise</b> → smoothing + loudness/clarity cut-offs, tuned on your voice.</li>
+    <li><b>No sound on a phone</b> → the sound engine only starts inside the Start tap. The Listen cue says "Turn your sound up."</li>
+    <li><b>App hears its own tone</b> → the mic is ignored while the note plays.</li>
+    <li><b>Mic left on after leaving</b> → Leave always stops the tone and releases the mic first.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>What was simplified</h2>
+  <ul>
+    <li>A soft electronic tone instead of a piano sound.</li>
+    <li>Fixed notes G3–D4, shuffled each round, instead of choosing your voice range. The octave rule covers deep and high voices.</li>
+    <li>Pick a note offers white keys C4–C5 only, with no sharps or flats.</li>
+    <li>One shared note engine instead of two copies of the try/hold logic.</li>
+    <li>One fixed zone, not one that tightens as you improve.</li>
+    <li>Nothing saved, including the theme and both scores.</li>
+    <li>No routing library: App switches screens itself.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>Decisions and your question</h2>
+  <p><b>Your choices:</b> React (to learn it) · online so you and others can use it on a phone · pitchy + Web Audio · Netlify (Vercel is equally fine) · <b>the right note an octave lower or higher counts</b> · <b>Back button with a "leave this round?" question</b> · <b>note name with number ("C4")</b> · <b>Hear it again</b> (no try used) · <b>Pick a note</b> with a running score, white keys C4–C5. All added to your PRD too.</p>
+  <p class="ref"><b>Scope note:</b> the last three go beyond your scope's original boundary. That's your call, and it's recorded. Build order: the 5-note round first, Pick a note after it works, so your core demo is safe.</p>
+  <h3>"How does it know I'm singing a note at all?"</h3>
+  <p>Two checks on every slice of sound: <b>loud enough</b> and <b>clear enough</b> (a sung note repeats evenly, noise doesn't), and it has to be in the human-voice range. <b>During the build</b> we'll show loudness, clarity and pitch on screen while you sing in your room, and tune the cut-offs until the dot ignores coughs but follows a held "ahh." We'll tune the zone width (starting at ±0.4 semitone) in the same session.</p>
+</section>
+
+
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    if(!cur){cur=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+    root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+  });
+
+  var steps=[
+    {t:'1 · Opening screen',d:'The browser loads PitchPal. App shows OpeningScreen with the name and tagline, then switches to Home after about 2.5 seconds without a tap.',r:'prd.md › Opening and Home · files: App.jsx, screens/OpeningScreen.jsx',n:['n-app','n-screens'],a:['a-app-screens']},
+    {t:'2 · Home',d:'HomeScreen shows Listen → Sing it back → Watch the dot, plus Start and Pick a note. ThemeToggle switches light/dark.',r:'prd.md › Opening and Home · Theme Toggle · files: screens/HomeScreen.jsx, components/ThemeToggle.jsx',n:['n-screens'],a:[]},
+    {t:'3 · Start',d:'The tap wakes the sound engine and asks for the microphone (mic.js). Refused → a message explains why it\'s needed. Allowed → App switches to PracticeScreen, which shuffles the 5 round notes.',r:'prd.md › States and Boundaries · files: audio/mic.js, lib/notes.js',n:['n-screens','n-mic','n-app','n-practice','n-micdev'],a:['a-app-practice','a-micdev-mic']},
+    {t:'4 · Listen',d:'PracticeScreen hands the note to the note engine. NotePanel shows "Listen" and the note name, e.g. "A3", and tone.js plays it for about 2.5 seconds. The mic is ignored meanwhile.',r:'prd.md › Playing the Note · Note Name and Hear It Again · files: hooks/useNoteAttempt.js, components/NotePanel.jsx, audio/tone.js',n:['n-practice','n-engine','n-tone','n-spk','n-meter'],a:['a-practice-engine','a-engine-tone','a-tone-spk','a-practice-meter']},
+    {t:'5 · Sing',d:'"Sing now", 5-second try. About 60× a second: mic → pitch.js checks loud + clear → pitchy gives the pitch → the engine asks notes.js how far off (counting an octave down or up as a match) → the dot moves and the too high / too low message updates.',r:'prd.md › Live Pitch Feedback (the dot) · files: audio/pitch.js, lib/notes.js, components/PitchMeter.jsx',n:['n-micdev','n-mic','n-pitch','n-engine','n-notes','n-practice','n-meter'],a:['a-micdev-mic','a-mic-pitch','a-pitch-engine','a-engine-notes','a-engine-practice','a-practice-meter']},
+    {t:'6 · Hear it again',d:'Tap it while singing: the engine stops listening, tone.js replays the note, and the same try restarts without using one up.',r:'prd.md › Note Name and Hear It Again · files: hooks/useNoteAttempt.js, audio/tone.js',n:['n-engine','n-tone','n-spk','n-meter'],a:['a-engine-tone','a-tone-spk']},
+    {t:'7 · Hit',d:'In the zone for 3 seconds without a break → the dot turns green, "You nailed it, well done!", the note is recorded as a pass, and the next note starts.',r:'prd.md › Hitting the Note · files: hooks/useNoteAttempt.js, components/PitchMeter.jsx',n:['n-engine','n-practice','n-meter'],a:['a-engine-practice','a-practice-meter']},
+    {t:'8 · Miss',d:'Try ends without a hit → recorded as a miss, with whether it was mostly high or low → next try. A silent try shows "I can\'t hear you…" and doesn\'t count.',r:'prd.md › Tries, Retry and Skip · States and Boundaries · files: hooks/useNoteAttempt.js',n:['n-engine','n-pitch'],a:['a-pitch-engine']},
+    {t:'9 · Out of tries',d:'After 3 counted misses: missed-all-three message plus Try again (same note, 3 fresh tries) or Skip (counts as a miss).',r:'prd.md › Tries, Retry and Skip · files: hooks/useNoteAttempt.js, components/NotePanel.jsx',n:['n-engine','n-meter'],a:[]},
+    {t:'10 · Leaving early',d:'Back pauses the round (tone stops, mic ignored, timers frozen) and LeaveDialog asks "Leave this round? Your progress won\'t be saved." Leave → mic released, round thrown away, App shows Home. Keep practicing → restarts the current try.',r:'prd.md › Leaving a Round Early · files: screens/PracticeScreen.jsx, components/LeaveDialog.jsx, audio/mic.js',n:['n-practice','n-mic','n-app','n-screens'],a:['a-app-screens']},
+    {t:'11 · Results',d:'After 5 notes, the round record goes to App → ResultsScreen. scoring.js gives "3/5 on pitch, mostly sang low", with Play again and Home.',r:'prd.md › End-of-Round Score · files: screens/ResultsScreen.jsx, lib/scoring.js',n:['n-practice','n-app','n-screens'],a:['a-app-practice','a-app-screens']},
+    {t:'★ Pick a note',d:'Home → Pick a note → tap a key (C4–C5). The same note engine runs steps 4–9 for that note. Each finished note adds to a running score ("4 nailed out of 6 notes"). Back stops sound and mic and shows the score card, then Home. No "are you sure?" question. Built after the round works.',r:'prd.md › Pick a Note · files: screens/PickNoteScreen.jsx, components/NoteKeys.jsx, hooks/useNoteAttempt.js, lib/scoring.js',n:['n-practice','n-engine','n-meter','n-tone','n-pitch','n-notes'],a:['a-practice-engine','a-engine-tone','a-pitch-engine','a-engine-notes','a-practice-meter']}
+  ];
+  var cur=0, wrap=document.getElementById('steps');
+  steps.forEach(function(s,i){
+    var b=document.createElement('button');b.textContent=s.t.split(' · ')[0];b.setAttribute('aria-label',s.t);
+    b.addEventListener('click',function(){show(i);});wrap.appendChild(b);
+  });
+  function show(i){
+    cur=i;var s=steps[i];
+    document.getElementById('stTitle').textContent=s.t;
+    document.getElementById('stDesc').textContent=s.d;
+    document.getElementById('stRef').textContent=s.r;
+    [].forEach.call(wrap.children,function(b,j){b.setAttribute('aria-pressed',j===i?'true':'false');});
+    [].forEach.call(document.querySelectorAll('.diagram g'),function(g){g.classList.toggle('on',s.n.indexOf(g.id)>-1);});
+    [].forEach.call(document.querySelectorAll('.diagram .arrow'),function(p){
+      var on=s.a.indexOf(p.id)>-1;p.classList.toggle('on',on);
+      p.setAttribute('marker-end',on?'url(#arrowhead-on)':'url(#arrowhead)');
+    });
+  }
+  document.getElementById('prev').addEventListener('click',function(){show((cur+steps.length-1)%steps.length);});
+  document.getElementById('next').addEventListener('click',function(){show((cur+1)%steps.length);});
+  show(0);
+
+  var off=document.getElementById('off'),dot=document.getElementById('dot'),msg=document.getElementById('mmsg');
+  function upd(){
+    var v=parseFloat(off.value),c=Math.max(-3,Math.min(3,v));
+    dot.style.top=(50-c/3*42)+'%';
+    var hit=Math.abs(v)<=0.4;dot.classList.toggle('hit',hit);
+    msg.textContent=hit?'On the line: hold it for 3 seconds!':(v>0?'Too high: come down a little':'Too low: go up a little')+(Math.abs(v)>3?' (way off, the dot is pinned)':'');
+  }
+  off.addEventListener('input',upd);upd();
+})();
+</script>
+</body>
+</html>

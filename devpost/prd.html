@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PitchPal Product Plan</title>
+<style>
+:root{
+  --bg:#f6f1e9; --card:#fffdf9; --ink:#14232b; --muted:#5b6a70; --line:#e6ddd0;
+  --accent:#0f4c5c; --accent-ink:#ffffff; --accent-soft:#dcebec; --peach:#f4c7a6;
+  --good:#1f9d63; --good-soft:#e0f4ea; --warn:#b8622b; --warn-soft:#fbebdf;
+  --cut:#9a3b3b; --cut-soft:#f6e4e4; --grad:linear-gradient(90deg,#0f4c5c,#0f4c5c);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1020; --card:#131a2e; --ink:#eaeefb; --muted:#9aa4c0; --line:#232c47;
+    --accent:#6c7cff; --accent-ink:#ffffff; --accent-soft:#1d2550; --peach:#a35bff;
+    --good:#4fd39a; --good-soft:#123528; --warn:#f0a36b; --warn-soft:#382718;
+    --cut:#f08c8c; --cut-soft:#3a1d22; --grad:linear-gradient(90deg,#3d8bff,#9b5cff);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1020; --card:#131a2e; --ink:#eaeefb; --muted:#9aa4c0; --line:#232c47;
+  --accent:#6c7cff; --accent-ink:#ffffff; --accent-soft:#1d2550; --peach:#a35bff;
+  --good:#4fd39a; --good-soft:#123528; --warn:#f0a36b; --warn-soft:#382718;
+  --cut:#f08c8c; --cut-soft:#3a1d22; --grad:linear-gradient(90deg,#3d8bff,#9b5cff);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:880px;margin:0 auto;padding:40px 16px 80px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--warn);background:var(--warn-soft);padding:3px 10px;border-radius:99px}
+h1{font-size:2.4rem;line-height:1.1;margin:12px 0 4px;letter-spacing:-.02em}
+.tagline{font-size:1.15rem;color:var(--accent);font-weight:600;margin:0}
+.lede{color:var(--muted);margin:8px 0 24px}
+button{font:inherit;cursor:pointer}
+.theme{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 24px;margin:18px 0}
+h2{font-size:1.2rem;margin:0 0 10px;letter-spacing:-.01em}
+.grow{border-left:5px solid var(--accent);background:var(--accent-soft)}
+.grow p{margin:6px 0}
+.grow .was{color:var(--muted)}
+/* journey */
+.journey{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:22px;align-items:start}
+@media (max-width:640px){.journey{grid-template-columns:1fr}.phone{margin:0 auto}}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.steps button{font-size:13px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:5px 11px}
+.steps button[aria-pressed="true"]{background:var(--grad);background-color:var(--accent);color:var(--accent-ink);border-color:transparent}
+.steptitle{font-weight:700;font-size:1.05rem;margin:4px 0}
+.stepdesc{color:var(--muted);margin:0 0 10px;min-height:4.8em}
+.nav{display:flex;gap:8px}
+.nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font-size:14px}
+.phone{width:240px;height:440px;border-radius:32px;border:8px solid var(--ink);background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center}
+.phone .small{font-size:12px;color:var(--muted)}
+.phone .big{font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.phone .pbtn{background:var(--grad);background-color:var(--accent);color:var(--accent-ink);border-radius:99px;padding:8px 22px;font-size:14px;font-weight:600;margin-top:10px;display:inline-block}
+.phone .ghost{border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;display:inline-block;margin:4px}
+.phone .top{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.howto{list-style:none;padding:0;margin:10px 0;font-size:13px;text-align:left}
+.howto li{margin:4px 0}.howto b{color:var(--accent)}
+.stage{position:relative;width:100%;height:170px}
+.stage .line{position:absolute;left:0;right:0;top:50%;height:3px;background:var(--accent);border-radius:3px}
+.stage .dot{position:absolute;left:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--peach);box-shadow:0 0 14px var(--peach);transition:top .6s ease,background .3s}
+.stage .dot.hit{background:var(--good);box-shadow:0 0 18px var(--good)}
+.msg{font-weight:700;margin-top:6px}
+.msg.good{color:var(--good)}
+/* sections */
+details{border:1px solid var(--line);border-radius:14px;margin:10px 0;overflow:hidden;background:var(--card)}
+summary{cursor:pointer;padding:12px 16px;font-weight:650;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.2rem;color:var(--muted)}
+details[open] summary::after{content:"–"}
+details .body{padding:0 18px 14px}
+details ul{margin:0;padding-left:20px}
+.crit li{list-style:none;margin-left:-20px;padding-left:26px;position:relative}
+.crit li::before{content:"";position:absolute;left:0;top:.35em;width:14px;height:14px;border:2px solid var(--accent);border-radius:4px}
+.assume{font-size:12px;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:1px 7px;border-radius:99px;margin-left:4px;white-space:nowrap}
+.src{font-size:12px;color:var(--muted);font-weight:400}
+.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.state{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg)}
+.state h3{font-size:.95rem;margin:0 0 4px}
+.state p{margin:0;font-size:14px;color:var(--muted)}
+.state q{color:var(--ink);font-weight:600}
+.swatches{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.sw{flex:1 1 200px;border-radius:16px;padding:14px;border:1px solid var(--line)}
+.sw.l{background:#f6f1e9;color:#14232b}.sw.d{background:#0b1020;color:#eaeefb}
+.chips{display:flex;gap:6px;margin-top:8px}.chips span{width:28px;height:28px;border-radius:50%;display:inline-block;border:1px solid rgba(128,128,128,.3)}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.now{border-top:4px solid var(--good)}.later{border-top:4px solid var(--warn)}.no{border-top:4px solid var(--cut)}
+.split .card{margin:0}
+.split ul{padding-left:20px;margin:6px 0 0}
+footer{color:var(--muted);font-size:13px;margin-top:30px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <span class="tag">PRD · approved</span>
+    <h1>PitchPal</h1>
+    <p class="tagline">Note by note, build your sound.</p>
+    <p class="lede">Plays a note, listens to you sing it back, and shows you with a floating dot whether you're too high, too low, or nailed it.</p>
+  </div>
+  <button class="theme" id="themeBtn" type="button">Toggle theme</button>
+</header>
+
+<section class="card grow">
+  <h2>How the plan grew from scope</h2>
+  <p class="was">Scope said: <em>"it plays a note → you sing it → you adjust until the dot hits the line."</em></p>
+  <p>Now we know exactly what that means: the note plays for a few seconds, you get <b>3 tries of ~5 seconds</b>, a hit means <b>holding the note on the line for 3 seconds</b>, silence doesn't cost a try, and after three misses you choose <b>Try again</b> or <b>Skip</b>.</p>
+</section>
+
+<section class="card">
+  <h2>The core journey</h2>
+  <div class="journey">
+    <div>
+      <div class="steps" id="steps" role="group" aria-label="Journey steps"></div>
+      <p class="steptitle" id="stepTitle"></p>
+      <p class="stepdesc" id="stepDesc"></p>
+      <div class="nav"><button type="button" id="prev">← Back</button><button type="button" id="next">Next →</button></div>
+    </div>
+    <div class="phone" id="phone" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Features and how we'll know they work</h2>
+  <details open><summary>Opening and Home <span class="src">scope › The Core Loop</span></summary><div class="body"><ul class="crit">
+    <li>Opening shows "PitchPal" + "Note by note, build your sound." for a few seconds, then Home appears with no tap.</li>
+    <li>Home shows "Listen", "Sing it back", "Watch the dot" and a Start button.</li>
+    <li>Pressing Start begins a 5-note round.</li></ul></div></details>
+  <details><summary>Playing the note</summary><div class="body"><ul class="crit">
+    <li>Each note plays out loud for a few seconds.</li>
+    <li>The screen makes clear when to listen and when it's your turn to sing.</li></ul></div></details>
+  <details><summary>Live pitch feedback (the dot) <span class="src">scope › The Unique Kernel</span></summary><div class="body"><ul class="crit">
+    <li>The dot moves up when you go higher and down when you go lower, in real time.</li>
+    <li>Above the target: dot above the line + "too high". Below: dot below + "too low".</li>
+    <li>The further off you are, the further the dot sits from the line.</li></ul></div></details>
+  <details><summary>Hitting the note</summary><div class="body"><ul class="crit">
+    <li>Holding the note on the line for at least 3 seconds turns the dot green and shows "You nailed it, well done!"</li>
+    <li>Briefly passing through the line (a wobble) does not count.</li>
+    <li>"On the line" is a fixed zone, in between and leaning forgiving, the same every round.</li>
+    <li>A hit is recorded as a pass and the next note begins.</li></ul></div></details>
+  <details><summary>Tries, retry and skip</summary><div class="body"><ul class="crit">
+    <li>3 tries of ~5 seconds per note, and the screen shows which try you're on.</li>
+    <li>After 3 misses: a missed-all-three message + encouragement + Try again / Skip.</li>
+    <li>Try again = same note, 3 fresh tries. A hit then still counts as a pass.</li>
+    <li>Skip moves on. The skipped note counts as a miss.</li></ul></div></details>
+  <details><summary>Note name and Hear it again <span class="src">added in 4-spec</span></summary><div class="body"><ul class="crit">
+    <li>Shows the note with its number, e.g. "C4", plus a one-time hint (4 = the middle of the piano).</li>
+    <li>Hear it again replays the note and restarts the try without using one up. No limit.</li>
+    <li>The right note an octave higher or lower counts.</li></ul></div></details>
+  <details><summary>Pick a note <span class="src">added in 4-spec</span></summary><div class="body"><ul class="crit">
+    <li>A Pick a note button on Home → 8 white keys, C4 to C5.</li>
+    <li>Tap a key, hear it, sing it: same dot, 3 tries, 3-second hold, Hear it again, Try again / Skip.</li>
+    <li>Running score, e.g. "4 nailed out of 6 notes". Back shows it, then Home. Nothing saved.</li>
+    <li>Built after the 5-note round works.</li></ul></div></details>
+  <details><summary>Leaving a round early <span class="src">added in 4-spec</span></summary><div class="body"><ul class="crit">
+    <li>A small Back button on the Practice screen.</li>
+    <li>It pauses and asks: "Leave this round? Your progress won't be saved." with Keep practicing / Leave.</li>
+    <li>Leave → Home, progress discarded. Keep practicing → restarts the current try.</li></ul></div></details>
+  <details><summary>End-of-round score <span class="src">scope › The Core Loop</span></summary><div class="body"><ul class="crit">
+    <li>After 5 notes: passes out of 5, e.g. "3/5 on pitch".</li>
+    <li>A short line on which way you mostly missed, e.g. "mostly sang low"</li>
+    <li>You can play another round or go Home.</li></ul></div></details>
+  <details><summary>Theme toggle <span class="src">scope › The POC Boundary</span></summary><div class="body"><ul class="crit">
+    <li>A toggle switches light ↔ dark, both matching the look below.</li></ul></div></details>
+</section>
+
+<section class="card">
+  <h2>What if…</h2>
+  <div class="states">
+    <div class="state"><h3>Microphone refused</h3><p>A message explains the microphone is needed to hear you sing. No round starts.</p></div>
+    <div class="state"><h3>Silence during a try</h3><p><q>I can't hear you, try singing louder.</q> The silent try doesn't count against your 3.</p></div>
+    <div class="state"><h3>Three misses</h3><p>Missed-all-three message, encouragement, then Try again or Skip.</p></div>
+    <div class="state"><h3>Leaving mid-round</h3><p>Back asks <q>Leave this round? Your progress won't be saved.</q> Leave goes Home; Keep practicing returns to the round.</p></div>
+    <div class="state"><h3>Closing the app</h3><p>Nothing is saved. The score lives only for the round, by design.</p></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Look and feel</h2>
+  <p style="margin:0;color:var(--muted)">From your reference image (<code>look-reference.png</code>): a cool musical vibe, sleek. Style only, not its screens.</p>
+  <div class="swatches">
+    <div class="sw l"><b>Light</b><br><small>Cream background, deep teal buttons, soft peach and teal circles</small>
+      <div class="chips"><span style="background:#f6f1e9"></span><span style="background:#0f4c5c"></span><span style="background:#f4c7a6"></span><span style="background:#7fbfc4"></span><span style="background:#1f9d63"></span></div></div>
+    <div class="sw d"><b>Dark</b><br><small>Near-black navy, glowing blue→purple gradients, subtle neon</small>
+      <div class="chips"><span style="background:#0b1020"></span><span style="background:#3d8bff"></span><span style="background:#9b5cff"></span><span style="background:#e04fd0"></span><span style="background:#4fd39a"></span></div></div>
+  </div>
+  <ul style="margin:0;padding-left:20px">
+    <li>Rounded cards, pill buttons, generous space, waveform and music-note touches.</li>
+    <li>Clean, bold, modern sans-serif. Big headings, quiet small text.</li>
+    <li>One big thing in the middle: the target line and dot. The dot turns <b style="color:var(--good)">green</b> on a hit.</li>
+    <li>Plain, encouraging words. No "cents" or theory jargon.</li>
+  </ul>
+</section>
+
+<section class="split">
+  <div class="card now"><h2>Building now</h2><ul>
+    <li>Opening screen + Home with how-to</li><li>5-note round: play, listen, detect pitch</li>
+    <li>Floating dot + too high / too low</li><li>3-second hold, 3 tries, Try again / Skip</li>
+    <li>Mic-refused and silence messages</li><li>End-of-round score</li><li>Light / dark toggle</li></ul>
+    <p class="src" style="margin-top:8px">Stretch: "which of two notes is higher?"</p></div>
+  <div class="card later"><h2>Deferred</h2><ul>
+    <li>Accounts / sign-in</li><li>Progress history, rings, streaks</li><li>Lesson library + bottom menu</li><li>Choosing voice range or difficulty</li><li>Zone tightening as you improve</li></ul></div>
+  <div class="card no"><h2>Not doing</h2><ul>
+    <li>Saving between sessions</li><li>Music-theory jargon</li><li>Recording your voice for playback</li><li>Mental-health features</li></ul></div>
+</section>
+
+<section class="card">
+  <h2>Confirmed in review</h2>
+  <ul>
+    <li>A skipped note counts as a miss.</li>
+    <li><b>Decided:</b> "On the line" is a fixed, in-between zone that leans forgiving. The exact width is tuned during the build with your voice. Zone tightening moves to Later.</li>
+    <li>The 5 notes sit in a comfortable middle range most voices can reach.</li>
+    <li>Results screen offers "play again" and "home".</li>
+    <li><b>Added in 4-spec:</b> a Back button on Practice with a "leave this round?" question.</li>
+    <li><b>Decided in 4-spec:</b> the right note sung one octave higher or lower counts as on the note.</li>
+    <li><b>Added in 4-spec:</b> note name with number (e.g. "C4"), Hear it again, and a Pick a note screen (white keys C4–C5, running score).</li>
+    <li><b>Open:</b> phone, laptop, or both? That's decided in <code>4-spec</code> and doesn't block approval.</li>
+  </ul>
+</section>
+
+<footer>Canonical version: <code>devpost/prd.md</code>. This page is a visual companion.</footer>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  document.getElementById('themeBtn').onclick=function(){
+    var dark=root.dataset.theme? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+  };
+  var S=[
+    {n:'Open',t:'Opening screen',d:'PitchPal and its tagline show for a few seconds, then Home appears on its own.',
+     p:'<div class="big">PitchPal</div><div class="small">Note by note, build your sound.</div>'},
+    {n:'Home',t:'Home: learn it in three steps',d:'A short how-to (Listen, Sing it back, Watch the dot) above one Start button. The theme toggle lives here too.',
+     p:'<div class="top"><span>PitchPal</span><span>☾</span></div><div class="big" style="font-size:1.2rem">Ready to sing?</div><ol class="howto"><li><b>1</b> Listen</li><li><b>2</b> Sing it back</li><li><b>3</b> Watch the dot</li></ol><span class="pbtn">Start</span>'},
+    {n:'Listen',t:'Listen',d:'Pressing Start begins a 5-note round (asking for the mic the first time). The note plays for a few seconds.',
+     p:'<div class="top"><span>Note 1/5</span><span></span></div><div style="font-size:2.4rem">🔊</div><div class="msg">Listen…</div>'},
+    {n:'Sing',t:'Sing: watch the dot',d:'Each try lasts ~5 seconds. The dot floats above or below the line as you sing, with a too high / too low message.',
+     p:'<div class="top"><span>Note 1/5</span><span>Try 1 of 3</span></div><div class="stage"><div class="line"></div><div class="dot" style="top:72%"></div></div><div class="msg">A little low, go higher</div>',dot:[72,30,60,50]},
+    {n:'Hit',t:'Nailed it',d:'Hold the note on the line for 3 seconds. The dot turns green, the message pops up, it counts as a pass and the next note starts.',
+     p:'<div class="top"><span>Note 1/5</span><span>Try 2 of 3</span></div><div class="stage"><div class="line"></div><div class="dot hit" style="top:50%"></div></div><div class="msg good">You nailed it, well done!</div>'},
+    {n:'Miss',t:'Out of tries',d:'After 3 missed tries: an encouraging message and a choice. Try again gives the same note 3 fresh tries. Skip moves on.',
+     p:'<div class="top"><span>Note 3/5</span><span>Try 3 of 3</span></div><div class="big" style="font-size:1.1rem">You missed all three tries</div><div class="small" style="margin:6px 0 10px">That one was tricky. Every try trains your ear.</div><span class="pbtn">Try again</span><span class="ghost">Skip</span>'},
+    {n:'Score',t:'End of round',d:'After 5 notes: how many you hit, and which way you mostly missed. Then play again or go home.',
+     p:'<div class="small">Round complete</div><div class="big" style="font-size:2.6rem">3/5</div><div>on pitch, mostly sang low</div><div style="margin-top:12px"><span class="pbtn">Play again</span><br><span class="ghost">Home</span></div>'}
+  ];
+  var i=0,timer=null,stepsEl=document.getElementById('steps');
+  S.forEach(function(s,k){var b=document.createElement('button');b.type='button';b.textContent=(k+1)+'. '+s.n;b.onclick=function(){show(k)};stepsEl.appendChild(b)});
+  function show(k){
+    i=k;clearInterval(timer);
+    var s=S[k];document.getElementById('stepTitle').textContent=s.t;document.getElementById('stepDesc').textContent=s.d;
+    document.getElementById('phone').innerHTML=s.p;
+    [].forEach.call(stepsEl.children,function(b,j){b.setAttribute('aria-pressed',j===k)});
+    if(s.dot){var d=document.querySelector('#phone .dot'),m=document.querySelector('#phone .msg'),j=0;
+      timer=setInterval(function(){j=(j+1)%s.dot.length;var v=s.dot[j];d.style.top=v+'%';
+        m.textContent=v>55?'A little low, go higher':v<45?'A bit high, come down':'Right on the line, hold it…';},1100);}
+  }
+  document.getElementById('prev').onclick=function(){show((i+S.length-1)%S.length)};
+  document.getElementById('next').onclick=function(){show((i+1)%S.length)};
+  show(0);
+})();
+</script>
+</body>
+</html>
