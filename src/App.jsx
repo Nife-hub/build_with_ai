@@ -5,11 +5,18 @@ import PitchMeter from './components/PitchMeter.jsx';
 import { startMic } from './audio/mic.js';
 import { playNote, stopNote } from './audio/tone.js';
 import { MIN_CLARITY, MIN_VOLUME, readPitch } from './audio/pitch.js';
-import { ROUND_NOTES, closenessMessage, createSmoother, offFromTarget } from './lib/notes.js';
+import {
+  ROUND_NOTES,
+  closenessMessage,
+  createGlider,
+  createSmoother,
+  createSteadyGate,
+  offFromTarget,
+} from './lib/notes.js';
 
 const NOTE_SECONDS = 2.5;
 const AFTER_NOTE_PAUSE = 300; // ms, so the mic doesn't hear the end of our own tone
-const HEARD_GRACE = 300; // ms the dot stays up between readings before hiding
+const HEARD_GRACE = 700; // ms the dot stays up between readings before hiding
 
 export default function App() {
   const [phase, setPhase] = useState('idle'); // idle | refused | listen | sing
@@ -17,6 +24,7 @@ export default function App() {
   const [off, setOff] = useState(null);
   const [debug, setDebug] = useState({ volume: 0, clarity: 0, rawPitch: 0 });
   const smoother = useRef(createSmoother(9));
+  const glider = useRef(createGlider(0.2));
   const note = ROUND_NOTES[noteIndex];
 
   useEffect(() => {
@@ -31,6 +39,7 @@ export default function App() {
     let lastHeardAt = 0;
     let lastDebugAt = 0;
     let recent = [];
+    const gate = createSteadyGate();
     const tick = () => {
       const now = performance.now();
       const reading = readPitch();
@@ -49,12 +58,15 @@ export default function App() {
         });
         lastDebugAt = now;
       }
-      if (reading.pitch) {
+      // Only a held, steady note moves the dot; talking and coughs stay hidden.
+      if (reading.pitch && gate.add(reading.pitch, now)) {
         lastHeardAt = now;
-        setOff(offFromTarget(smoother.current.add(reading.pitch), note.freq));
+        const steady = offFromTarget(smoother.current.add(reading.pitch), note.freq);
+        setOff(glider.current.add(steady, now));
       } else if (now - lastHeardAt > HEARD_GRACE) {
         // Only hide the dot after a short gap, so a wobble doesn't make it blink.
         smoother.current.reset();
+        glider.current.reset();
         setOff(null);
       }
       frame = requestAnimationFrame(tick);

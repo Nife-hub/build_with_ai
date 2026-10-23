@@ -4,8 +4,9 @@ import { PitchDetector } from 'pitchy';
 import { getAnalyser } from './mic.js';
 
 // "Is this singing?" cut-offs. Tuned by singing into the app.
-export const MIN_VOLUME = 0.003; // how loud (0 = silent, 1 = as loud as possible)
-export const MIN_CLARITY = 0.8; // how cleanly the sound repeats (0 to 1)
+export const MIN_VOLUME = 0.002; // how loud (0 = silent, 1 = as loud as possible)
+export const MIN_CLARITY = 0.7; // how cleanly the sound repeats (0 to 1) to start counting as singing
+export const KEEP_CLARITY = 0.5; // lower bar once you're already singing, so a wobble doesn't drop you
 
 // The range a human voice can reach, in vibrations per second.
 const MIN_PITCH = 70;
@@ -13,6 +14,7 @@ const MAX_PITCH = 1100;
 
 let detector = null;
 let samples = null;
+let wasSinging = false;
 
 // Returns { pitch, volume, clarity, rawPitch, voiceRange }. `pitch` is null when it isn't singing.
 export function readPitch() {
@@ -32,7 +34,9 @@ export function readPitch() {
 
   const [rawPitch, clarity] = detector.findPitch(samples, analyser.context.sampleRate);
   const voiceRange = rawPitch >= MIN_PITCH && rawPitch <= MAX_PITCH;
-  const singing = volume >= MIN_VOLUME && clarity >= MIN_CLARITY && voiceRange;
+  const clarityNeeded = wasSinging ? KEEP_CLARITY : MIN_CLARITY;
+  const singing = volume >= MIN_VOLUME && clarity >= clarityNeeded && voiceRange;
+  wasSinging = singing;
 
   return { pitch: singing ? rawPitch : null, volume, clarity, rawPitch, voiceRange };
 }

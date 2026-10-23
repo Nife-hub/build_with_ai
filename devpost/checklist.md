@@ -9,7 +9,7 @@ Build mode: learn
 
 ## Slices
 
-- [ ] **1. Hear a note, sing, and watch the dot follow your voice**
+- [x] **1. Hear a note, sing, and watch the dot follow your voice**
   Becomes usable: A running PitchPal page in the browser. Press a button, hear a note (with its name, e.g. "A3"), then sing: the dot floats above or below the target line in real time, further away the further off you are, and a temporary readout shows loudness, clarity and pitch so we can tune the "is this singing?" cut-offs together.
   Why now: This is the unique kernel and the riskiest part (microphone, pitchy, the octave rule, the browser's sound rules). If the dot can't follow a voice, nothing else matters, so we prove it first. Project setup lives inside this slice.
   PRD ref: `prd.md > Live Pitch Feedback (the dot)`, `prd.md > Playing the Note`, `prd.md > States and Boundaries` (first use / microphone permission)

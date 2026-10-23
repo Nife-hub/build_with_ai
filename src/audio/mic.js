@@ -14,15 +14,17 @@ export async function startMic() {
   if (analyser) return 'allowed';
   try {
     stream = await navigator.mediaDevices.getUserMedia({
-      // These "helpful" browser features bend the pitch, so we switch them off.
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+      // Echo and noise removal bend the pitch, so we switch them off. Auto volume
+      // only changes loudness (not pitch) and lets you sing from further away.
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true },
     });
   } catch {
     return 'refused';
   }
   const source = ac.createMediaStreamSource(stream);
   analyser = ac.createAnalyser();
-  analyser.fftSize = 2048;
+  // A longer slice of sound gives steadier pitch readings, especially for low voices.
+  analyser.fftSize = 4096;
   source.connect(analyser);
   return 'allowed';
 }
