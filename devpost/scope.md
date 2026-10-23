@@ -11,7 +11,7 @@ An app that plays a note, listens to you sing it back, and tells you whether you
 It's the ear you don't have yet. Singers who can't hear themselves go off-pitch get told right away, and visually, **which way** they're off (too high or too low) and **how far**, so they never have to wait for someone in choir to tell them.
 
 ## Who It's For
-People like the learner: singers who struggle to stay on pitch. In their words: "when I sing off, I can't tell until someone tells me and I wont know whether I'm too low or too high and it's usually when I'm singing in the choir." Today they rely on a choir director or other singers to catch it. Beginners and experts may use it too, but this first version is written for the struggling singer, in plain language (no "cents" or theory jargon).
+People like the learner: singers who struggle to stay on pitch. In their words: "when I sing off, I can't tell until someone tells me and I won't know whether I'm too low or too high and it's usually when I'm singing in the choir." Today they rely on a choir director or other singers to catch it. Beginners and experts may use it too, but this first version is written for the struggling singer, in plain language (no "cents" or theory jargon).
 
 ## The Core Loop
 Open the app → it plays a note → you sing it → a dot floats above or below a target line while a message says how close you were → you adjust until the dot hits the line and the app says **"you nailed it, well done."** A short round (about 5 notes) ends with a simple score, e.g. "3/5 on pitch, mostly sang low."
