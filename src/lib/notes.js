@@ -72,7 +72,7 @@ export function createSmoother(size = 5) {
 // Tells singing apart from talking and coughs: singing holds one pitch, speech slides
 // around in short bursts. The gate only opens once the pitch has stayed within `range`
 // semitones for `holdMs`, and closes again after a gap longer than `gapMs`.
-export function createSteadyGate({ holdMs = 300, range = 0.75, gapMs = 150 } = {}) {
+export function createSteadyGate({ holdMs = 300, range = 0.75, gapMs = 250 } = {}) {
   let recent = [];
   let open = false;
   let lastAt = 0;

@@ -137,19 +137,20 @@ PRD ref: `prd.md > Theme Toggle`.
 PRD ref: `prd.md > Playing the Note`, `prd.md > Note Name and Hear It Again`.
 
 ### Microphone — `audio/mic.js`
-`startMic()`: asks for the mic with the browser's echo cancelling, noise removal and auto-volume turned **off** (they distort pitch), connects it to an analyser, and reports "allowed" or "refused." `stopMic()` releases it when you leave a practice screen.
+`startMic()`: asks for the mic with the browser's echo cancelling and noise removal turned **off** (they distort pitch) and auto-volume **on** (it only changes loudness, and lets the singer stand at a normal distance; changed during slice 1 tuning), connects it to an analyser, and reports "allowed" or "refused." `stopMic()` releases it when you leave a practice screen.
 PRD ref: `prd.md > States and Boundaries` (first use, microphone refused).
 
 ### Pitch reader — `audio/pitch.js`
-`readPitch()`: takes the latest slice of mic sound, measures its loudness, and asks pitchy for `[pitch, clarity]`. Returns a pitch only if loudness ≥ `MIN_VOLUME`, clarity ≥ `MIN_CLARITY`, and the pitch is between 70 and 1100 vibrations per second. Otherwise it returns "not singing."
+`readPitch()`: takes the latest slice of mic sound, measures its loudness, and asks pitchy for `[pitch, clarity]`. Returns a pitch only if loudness ≥ `MIN_VOLUME`, clarity ≥ `MIN_CLARITY` (or the lower `KEEP_CLARITY` once singing has started), and the pitch is between 70 and 1100 vibrations per second. Otherwise it returns "not singing."
 PRD ref: `prd.md > Live Pitch Feedback (the dot)`, `prd.md > States and Boundaries` (silence).
 
 ### Note helpers — `lib/notes.js`
 - **Note list:** name → pitch for the round notes (G3 196.0, A3 220.0, B3 246.9, C4 261.6, D4 293.7) and the Pick a note keys (C4 261.6, D4 293.7, E4 329.6, F4 349.2, G4 392.0, A4 440.0, B4 493.9, C5 523.3). These are vibrations per second.
 - **How far off:** `semitonesOff(sung, target) = 12 × log2(sung ÷ target)`. Positive means too high, negative means too low.
 - **Octave rule (learner decision):** the sung pitch is compared to the target ÷ 2 (an octave lower), the target, and the target × 2 (an octave higher), and the closest one is used. So the right note in any of those three octaves counts, and the dot shows how far off you are from *that* version of the note.
-- **`ZONE`:** how close counts as "on the line" (tunable, starts at ±0.4 semitone).
-- **Smoothing:** takes the middle value of the last 5 readings so one stray reading doesn't make the dot jump.
+- **`ZONE`:** how close counts as "on the line" (tuned to ±0.5 semitone in slice 1).
+- **Smoothing:** takes the middle value of the last 9 readings so one stray reading doesn't make the dot jump, then glides the dot toward it (`createGlider`) so natural voice wobble shows as a calm drift.
+- **Steady-pitch gate (`createSteadyGate`):** the dot only appears once the pitch has held within ±0.75 semitone for about 0.3 seconds, so talking, coughs and nearby voices don't move it (added in slice 1 tuning).
 
 PRD ref: `prd.md > Live Pitch Feedback (the dot)`, `prd.md > Product Decisions`.
 
@@ -218,6 +219,7 @@ build_with_ai/                  # project folder = the GitHub repository
 │   │   └── pitch.js            # loudness + clarity checks, pitchy → sung pitch
 │   ├── lib/
 │   │   ├── notes.js            # note list, semitone maths, octave rule, ZONE, smoothing
+│   │   ├── attempt.js          # one try's timing: 5 s try, 3 s hold, silent try (no React, testable)
 │   │   └── scoring.js          # passes out of N + "mostly sang low/high"
 │   └── styles/
 │       ├── theme.css           # light/dark color variables, fonts
@@ -231,8 +233,8 @@ build_with_ai/                  # project folder = the GitHub repository
 
 ## External Services and Dependencies
 
-- **pitchy (library, runs in the browser):** `PitchDetector.forFloat32Array(2048)` creates a detector. `detector.findPitch(samples, sampleRate)` returns `[pitchHz, clarity]`. No key, free (open-source). https://github.com/ianprime0509/pitchy
-- **Web Audio API / getUserMedia (built into the browser):** `new AudioContext()`, `audioContext.resume()` on the Start / Pick a note tap, `createOscillator()` + `createGain()` for the tone, `navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:false, noiseSuppression:false, autoGainControl:false } })` → `createMediaStreamSource()` → `createAnalyser()` (`fftSize = 2048`) → `getFloatTimeDomainData()`. Mic access requires `localhost` or `https://`. Free.
+- **pitchy (library, runs in the browser):** `PitchDetector.forFloat32Array(4096)` creates a detector (sized to the analyser). `detector.findPitch(samples, sampleRate)` returns `[pitchHz, clarity]`. No key, free (open-source). https://github.com/ianprime0509/pitchy
+- **Web Audio API / getUserMedia (built into the browser):** `new AudioContext()`, `audioContext.resume()` on the Start / Pick a note tap, `createOscillator()` + `createGain()` for the tone, `navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:false, noiseSuppression:false, autoGainControl:true } })` → `createMediaStreamSource()` → `createAnalyser()` (`fftSize = 4096`) → `getFloatTimeDomainData()`. Mic access requires `localhost` or `https://`. Free.
 - **Google Fonts (Plus Jakarta Sans):** loaded by a `<link>` in `index.html`. Free, no key. If it can't load, the system sans-serif shows instead. https://fonts.google.com/specimen/Plus+Jakarta+Sans
 - **GitHub:** free account. Hosts the public repository (required). https://github.com
 - **Netlify:** free plan, sign in with GitHub. Builds with `npm run build` and serves `dist/` at an `https://` link. No keys in the app. https://docs.netlify.com/
@@ -280,6 +282,6 @@ Clarified in conversation: every slice of sound must pass two checks, **loud eno
 (A second concept, octaves and white vs. black keys, was also clarified with a "ladder of notes" explanation. The learner confirmed they understood.)
 
 **Tuning during the build (carried from `prd.md > Open Questions`):**
-- **"On the line" zone width:** starts at ±0.4 semitone (a little less than halfway to the next piano key), which leans forgiving. Tuned in the same session by singing into the app.
+- **"On the line" zone width:** started at ±0.4 semitone; tuned to ±0.5 semitone (halfway to the next piano key) in slice 1 after the learner sang into the app and the dot struggled to stay on the line.
 
 **Resolved from `prd.md > Open Questions`:** phone, laptop or both → both, via the online link.

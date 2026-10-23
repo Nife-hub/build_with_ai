@@ -92,9 +92,35 @@
   font-weight: 800;
 }
 
+.note-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hint {
+  margin: 4px 0 0;
+  max-width: 22ch;
+  font-size: 0.8rem;
+  color: var(--text-quiet);
+}
+
+.practice-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
 .cue {
   color: var(--text-quiet);
   font-size: 0.95rem;
+}
+
+.try-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
 }
 
 .message {
@@ -102,6 +128,16 @@
   font-weight: 600;
   min-height: 1.5em;
   margin: 0;
+}
+
+.message-hit {
+  color: var(--success);
+  font-size: 1.25rem;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* The pitch meter: big target line + floating dot */

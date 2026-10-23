@@ -28,6 +28,7 @@ Build mode: learn
   Verify (mechanical): `npm run build` succeeds; drive the engine in Chrome headless with a fake microphone (Chrome's built-in fake audio input) or, if that isn't reliable, a temporary test switch that feeds pretend pitches, and confirm: a steady on-target pitch for 3 s → "hit"; a wobble through the line → no hit; silence → try not counted; 3 off-target tries → out-of-tries.
   Learner check: Press Start, listen, then sing the note. Try singing it badly on purpose (too high, too low, silent) and then nail it by holding steady for 3 seconds. Tap Hear it again mid-try and check the try number doesn't go up. Miss three times and try both Try again and Skip.
   Commit: `Add the note engine with tries, hold and hear it again`
+  In progress (session 2): built and mechanically verified (pretend-reading tests all pass, build OK), saved as a work-in-progress commit. The learner's first try showed they again had to sing loudly or very close, and the dot moved a bit fast; detection was loosened (see Revisions) but not yet re-tried. Next: learner refreshes and sings at normal volume and distance, reads Clarity and Heard from the tuning panel if it still struggles, then does the full slice 2 learner check before the real commit.
 
 - [ ] **3. A full 5-note round with a score and a way out**
   Becomes usable: Start runs a shuffled 5-note round (G3–D4) showing "Note 2/5", ending on a Results screen like "3/5 on pitch, mostly sang low" with Play again and Home. A small Back button asks "Leave this round? Your progress won't be saved." with Keep practicing / Leave, and Leave switches off the mic. A refused microphone shows the "PitchPal needs your microphone…" message instead of starting.
@@ -61,8 +62,8 @@ Build mode: learn
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 1: the learner sings into the live dot and we tune the loudness/clarity cut-offs and the "on the line" zone together
-  In progress (session 1, noisy room): dot follows the learner's voice when shown and stays hidden in quiet; it shows only intermittently while singing, and the Tuning panel's loudness/clarity flicker between ✓ and ✗. Learner paused to retry in a quiet room. Current settings: MIN_VOLUME 0.003, MIN_CLARITY 0.8, ZONE 0.4, 9-reading smoothing. Next: read the panel numbers while singing and while quiet in the quiet room, set the cut-offs from them, tune ZONE, then finish the slice 1 learner check and commit.
+- [x] Early usable behavior explored — after slice 1: the learner sings into the live dot and we tune the loudness/clarity cut-offs and the "on the line" zone together
+  Done (session 2): learner reported having to sing very close, a jumpy dot that never settled on the line, and a dot hidden most of the time; then that coughs, talking and nearby voices moved the dot. After tuning, the learner confirmed the dot stays on the line, claps/coughs/talking stay hidden, and a held note shows. Settings: MIN_VOLUME 0.002, MIN_CLARITY 0.7 (KEEP_CLARITY 0.5 once singing), ZONE 0.5, mic auto volume on, 4096-sample slices, steady-pitch gate (0.3 s within ±0.75 semitone), gliding dot.
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
@@ -82,3 +83,7 @@ Reflection:
 Activity mode:
 
 ## Revisions
+
+- Slice 1 tuning (learner feedback): the mic's auto volume is now **on** (it changes loudness, not pitch, and lets the learner sing from a normal distance); slices are 4096 samples instead of 2048 for steadier readings; clarity has two bars (0.7 to start, 0.5 once singing); `ZONE` is ±0.5 semitone instead of ±0.4; the dot glides (`createGlider`) after 9-reading smoothing; and a steady-pitch gate (`createSteadyGate`) keeps talking, coughs and nearby voices from moving the dot. `spec.md` updated to match.
+- Slice 2: the try/hold/silence timing lives in a small plain-JavaScript helper, `lib/attempt.js`, which `hooks/useNoteAttempt.js` wraps. Keeping it free of React and the microphone lets a Node script feed it pretend readings, which is the mechanical check instead of a fake mic in headless Chrome. A hold that is still going when the 5 seconds run out is allowed to finish, so a note reached late in a try isn't cut off.
+- Slice 2 learner check (learner had to sing loudly or very close again): one weak reading reset the lower clarity bar, so the steady-pitch gate kept restarting at a distance. The lower bar now lasts 0.25 s after the last good reading; clarity bars are 0.6 to start / 0.45 once singing; the gate tolerates 0.25 s gaps; the dot glides over 0.35 s; the tuning panel shows how much of the last 2 seconds counted as singing.
