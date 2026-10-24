@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PitchPal App Map</title>
+<style>
+  :root {
+    --bg: #f6f1e9; --card: #fffdf9; --text: #14232b; --quiet: #5b6b72;
+    --accent: #0f4c5c; --peach: #e8956a; --border: rgba(20, 35, 43, 0.12); --code-bg: #efe8dc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b1618; --card: #122327; --text: #eef5f3; --quiet: #9db3b2;
+      --accent: #f4b183; --peach: #f4b183; --border: rgba(220, 245, 240, 0.12); --code-bg: #1a2f34;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 56px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.25rem; margin: 36px 0 10px; }
+  p { margin: 0 0 12px; }
+  .quiet { color: var(--quiet); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; margin: 12px 0; }
+  code { background: var(--code-bg); border-radius: 6px; padding: 1px 6px; font: 0.9em/1.4 ui-monospace, Consolas, monospace; }
+  ol.route { padding-left: 0; list-style: none; counter-reset: stop; }
+  ol.route > li { counter-increment: stop; position: relative; padding-left: 44px; }
+  ol.route > li::before {
+    content: counter(stop); position: absolute; left: 16px; top: 16px;
+    width: 28px; height: 28px; margin-left: -6px; border-radius: 50%;
+    background: var(--accent); color: var(--bg); font-weight: 700; display: grid; place-items: center;
+  }
+  .pieces { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .pieces .card { margin: 0; }
+  .pieces strong { color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 0.85rem; color: var(--quiet); font-weight: 600; }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  svg text { fill: var(--text); font: 13px system-ui, sans-serif; }
+  svg .box { fill: var(--card); stroke: var(--accent); stroke-width: 1.5; }
+  svg .you { fill: var(--peach); opacity: 0.25; stroke: var(--peach); }
+  svg .arrow { stroke: var(--accent); stroke-width: 2; fill: none; marker-end: url(#head); }
+  svg .file { fill: var(--quiet); font-size: 11px; }
+  .diagram { overflow-x: auto; }
+  footer { margin-top: 40px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>PitchPal App Map</h1>
+  <p class="quiet">A one-page guide to how PitchPal fits together: what happens when you sing, where it lives in the code, and where to start when you want to change something.</p>
+
+  <h2>What PitchPal is</h2>
+  <p>PitchPal plays a note, listens while you sing it back, and shows a dot above or below a line so you can see straight away if you're too high or too low. Hold the note on the line for 3 seconds to nail it. A round is 5 shuffled notes with a score at the end; <em>Pick a note</em> lets you choose any key from C4 to C5. Everything runs in the browser. Nothing is saved and there's no server or account.</p>
+
+  <div class="pieces">
+    <div class="card"><strong>Screens</strong><br />Opening, Home, the round, Results, Pick a note. <code>src/screens/</code>, switched by <code>src/App.jsx</code>.</div>
+    <div class="card"><strong>Sound in and out</strong><br />Plays the note and listens to the mic. <code>src/audio/</code></div>
+    <div class="card"><strong>The note engine</strong><br />Tries, the 3-second hold, the countdown. <code>src/hooks/useNoteAttempt.js</code> + <code>src/lib/attempt.js</code></div>
+    <div class="card"><strong>Notes and scoring</strong><br />Note list, solfège, "how far off", "mostly sang low". <code>src/lib/</code></div>
+  </div>
+
+  <h2>One action, start to finish: you sing a note</h2>
+  <div class="card diagram">
+    <svg viewBox="0 0 700 250" width="100%" role="img" aria-labelledby="diagram-title diagram-desc" style="min-width: 560px">
+      <title id="diagram-title">What happens when you sing</title>
+      <desc id="diagram-desc">Your voice goes into the microphone; the pitch reader turns it into a pitch; the note engine's heartbeat works out how far off you are and asks the try rules what happened; the screen moves the dot and shows the message and countdown.</desc>
+      <defs>
+        <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10z" fill="currentColor" style="fill: var(--accent)" />
+        </marker>
+      </defs>
+      <rect class="you" x="10" y="20" width="130" height="64" rx="14" />
+      <text x="75" y="48" text-anchor="middle">You sing</text>
+      <text x="75" y="68" text-anchor="middle" class="file">into the mic</text>
+
+      <rect class="box" x="190" y="20" width="150" height="64" rx="14" />
+      <text x="265" y="46" text-anchor="middle">Pitch reader</text>
+      <text x="265" y="66" text-anchor="middle" class="file">audio/pitch.js · readPitch</text>
+
+      <rect class="box" x="390" y="20" width="160" height="64" rx="14" />
+      <text x="470" y="46" text-anchor="middle">Heartbeat (~60×/s)</text>
+      <text x="470" y="66" text-anchor="middle" class="file">useNoteAttempt.js · tick</text>
+
+      <rect class="box" x="390" y="160" width="160" height="64" rx="14" />
+      <text x="470" y="186" text-anchor="middle">Try rules</text>
+      <text x="470" y="206" text-anchor="middle" class="file">lib/attempt.js · update</text>
+
+      <rect class="you" x="590" y="20" width="100" height="204" rx="14" />
+      <text x="640" y="100" text-anchor="middle">Screen</text>
+      <text x="640" y="122" text-anchor="middle" class="file">dot moves,</text>
+      <text x="640" y="138" text-anchor="middle" class="file">message,</text>
+      <text x="640" y="154" text-anchor="middle" class="file">countdown</text>
+
+      <path class="arrow" d="M140 52 H186" />
+      <path class="arrow" d="M340 52 H386" />
+      <path class="arrow" d="M455 84 V156" />
+      <path class="arrow" d="M485 156 V88" />
+      <text x="372" y="125" class="file">how far off?</text>
+      <text x="492" y="125" class="file">going / hit / miss / silent</text>
+      <path class="arrow" d="M550 52 H586" />
+    </svg>
+  </div>
+
+  <h2>The route through the code</h2>
+  <p class="quiet">You followed this route during the build wrap-up. In your editor, search (Ctrl+Shift+F) for the text in quotes. Line numbers are from this snapshot and may drift.</p>
+  <ol class="route">
+    <li class="card">
+      <strong>The heartbeat</strong>, <code>src/hooks/useNoteAttempt.js</code>, search <code>const tick</code> (about line 79).<br />
+      About 60 times a second it reads the mic with <code>readPitch()</code>, works out how many semitones you are off, moves the dot (<code>setOff</code>), and asks the try rules what happened with <code>attempt.update(heard, now)</code>.
+    </li>
+    <li class="card">
+      <strong>The try rules</strong>, <code>src/lib/attempt.js</code>, search <code>Waiting for the singer to start</code> (about line 31).<br />
+      Decides when a try starts, ends, is a hit, or doesn't count. After a used try, a new one waits for you to pause first, which is why one long breath only uses one try. The timings sit at the top: <code>HOLD_SECONDS</code>, <code>STOP_SECONDS</code>, <code>MAX_SING_SECONDS</code>.
+    </li>
+    <li class="card">
+      <strong>What you see</strong>, <code>src/components/NotePanel.jsx</code>, search <code>countdown</code> (about line 38).<br />
+      Shows the note name and solfège, "Try 2 of 3", the seconds left, and the message. The message wording lives in <code>messageFor</code> at the bottom of <code>useNoteAttempt.js</code>, where you changed it to "Take a breath and let's try again."
+    </li>
+  </ol>
+
+  <h2>To change this, start here</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th scope="col">If you want to change…</th><th scope="col">Start here</th></tr></thead>
+      <tbody>
+        <tr><td>What PitchPal says after a try, a hit, or a miss</td><td><code>src/hooks/useNoteAttempt.js</code> → <code>messageFor</code></td></tr>
+        <tr><td>Try length, hold time, how long a pause ends a try</td><td><code>src/lib/attempt.js</code> → <code>MAX_SING_SECONDS</code>, <code>HOLD_SECONDS</code>, <code>STOP_SECONDS</code></td></tr>
+        <tr><td>How close counts as "on the line"</td><td><code>src/lib/notes.js</code> → <code>ZONE</code> (in semitones)</td></tr>
+        <tr><td>Which notes a round uses, or the Pick a note keys</td><td><code>src/lib/notes.js</code> → <code>ROUND_NOTES</code>, <code>KEY_NOTES</code>; solfège in <code>solfege</code></td></tr>
+        <tr><td>How sensitive the mic is (ignoring breaths and noise)</td><td><code>src/audio/pitch.js</code> → <code>MIN_VOLUME</code>, <code>MIN_CLARITY</code></td></tr>
+        <tr><td>The score line ("mostly sang low")</td><td><code>src/lib/scoring.js</code> → <code>summarize</code></td></tr>
+        <tr><td>Colors for light or dark mode</td><td><code>src/styles/theme.css</code> → the <code>:root</code> and <code>:root[data-theme='dark']</code> blocks</td></tr>
+        <tr><td>Fonts</td><td>Download list in <code>index.html</code>; everyday font in <code>src/styles/theme.css</code> (<code>body</code>); display fonts near the bottom of <code>src/styles/app.css</code>; opening title in <code>.opening-name</code></td></tr>
+        <tr><td>Letters drawn as music notes</td><td><code>src/components/MusicText.jsx</code></td></tr>
+        <tr><td>The microphone messages on Home</td><td><code>src/screens/HomeScreen.jsx</code> → <code>MIC_MESSAGES</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>A practice to reuse</h2>
+  <div class="card">
+    <p><strong>Turn "this felt wrong" into a concrete scenario, then into a check.</strong></p>
+    <p>During the slice 2 learner check, singing one long breath across different notes used up all three tries. That vague feeling became a precise scenario ("sing nonstop for 25 seconds") and a precise rule: a try ends after about 1 second of quiet or 10 seconds of singing, and the next try waits for a pause. Because the try rules live in plain JavaScript (<code>src/lib/attempt.js</code>, separate from React and the microphone), the scenario could be replayed as pretend readings: "one long breath: try 2 waits for a pause" became one of ten automatic checks, alongside the real singing test.</p>
+    <p>On another project: when something feels off, write down the exact steps that show it, agree what should happen instead, and keep the rule in a small piece of code you can feed made-up input. The bug report then becomes a test that keeps it fixed. The reasoning is recorded in <code>devpost/checklist.md</code> under <em>Revisions</em>.</p>
+  </div>
+
+  <h2>Run it again</h2>
+  <div class="card">
+    <p>In the project folder: <code>npm install</code> (first time only), then <code>npm run dev</code>, and open <code>http://localhost:5173</code> in Chrome. Allow the microphone when you press Start.</p>
+    <details>
+      <summary>Testing on a phone</summary>
+      <p>Phones only allow the microphone on a secure <code>https://</code> page, so the laptop's local address won't work there. Use the deployed site, or a temporary Cloudflare tunnel to <code>http://localhost:5173</code> (the dev server already accepts <code>.trycloudflare.com</code> addresses). On Android, close chat bubbles, screen filters and floating widgets first, or Android blocks the permission pop-up.</p>
+    </details>
+  </div>
+
+  <footer class="quiet">
+    Snapshot of PitchPal at commit <code>ef51f50</code> (end of <code>5-build</code>, 24 October 2026). The code can drift after this, so if a search doesn't find something, the name may have changed.
+  </footer>
+</main>
+</body>
+</html>
