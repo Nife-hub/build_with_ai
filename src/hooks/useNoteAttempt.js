@@ -202,7 +202,7 @@ function messageFor(phase, off, notice) {
   if (notice?.missed) {
     const used = `Try ${notice.used} of ${TRIES} used.`;
     if (Math.abs(notice.avgOff) <= ZONE) return `${used} So close! Take a breath, then hold it steady on the line.`;
-    return `${used} You were mostly ${notice.avgOff < 0 ? 'low' : 'high'}. Take a breath and sing again.`;
+    return `${used} You were mostly ${notice.avgOff < 0 ? 'low' : 'high'}. Take a breath and let's try again.`;
   }
   if (off !== null) return closenessMessage(off);
   return '';
