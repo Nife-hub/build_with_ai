@@ -52,7 +52,7 @@ Build mode: learn
   Commit: `Add opening, home, themes and the PitchPal look`
   Done (session 3): mechanically verified (build OK; headless-Chrome screenshots of every screen in light and dark at 390px and 1280px, no sideways scrolling; theme toggle on Home and mid-round; round checks still pass). Learner reviewed it, asked for a friendlier look, edge-aligned top bar on laptops and a new dark palette, and approved the result.
 
-- [ ] **5. Pick a note: tap any white key and practice it**
+- [x] **5. Pick a note: tap any white key and practice it**
   Becomes usable: Pick a note on Home opens 8 piano-style keys (C4–C5). Tap one, hear it, sing it with the same dot and rules, and watch a running score ("4 nailed out of 6 notes"). Back shows "You nailed 4 out of 6 notes, mostly sang low" with a Home button, or goes straight Home if no notes were finished.
   Why now: It's a learner addition built entirely on the note engine, so it comes last: the core demo is safe if anything here goes wrong.
   PRD ref: `prd.md > Pick a Note`
@@ -61,6 +61,7 @@ Build mode: learn
   Verify (mechanical): `npm run build` succeeds; in headless Chrome with a fake mic, tap a key, finish a note, confirm the running score updates; Back with no finished notes goes Home, Back with finished notes shows the score card; mic released after Back.
   Learner check: Open Pick a note, tap a few keys and sing them. Tap a different key halfway through a note and check that note isn't counted. Press Back and read your score card.
   Commit: `Add Pick a note with keys and running score`
+  Done (session 3): mechanically verified (build OK; 10 headless-Chrome Pick a note checks; screenshots in both themes and sizes; round checks still pass) and the learner confirmed keys, running score, abandoned notes and the score card work.
 
 ## Hands-on Checkpoints
 
@@ -95,3 +96,4 @@ Activity mode:
 - Slice 4: the logo and theme toggle sit in a full-width top bar on every screen after the opening, rather than only on Home; on laptops they sit at the far left and right edges of the page (learner request). Pick a note shows on Home but stays disabled until slice 5. The tuning panel and its readings were removed from the note engine as well as the screen.
 - Slice 4 learner check (learner felt it looked a little plain): added a friendly headset illustration on a soft blob (Home and Opening, `components/Headphones.jsx`), with a sound wave between the cups and floating music notes, plus faint drifting music notes in the background of every screen (`components/FloatingNotes.jsx`), all themed for light and dark and still with reduced motion.
 - Slice 4 learner check (dark theme): the learner found blue-to-purple too cliché. Maroon and then burgundy were tried; on the agent's suggestion the dark theme became midnight teal with peach-to-amber highlights, matching the light theme's teal and peach and keeping the green hit dot easy to see. `prd.md > Look and Feel` and `spec.md > Look and Feel` updated.
+- Slice 5: each key also shows its solfège under the note name (following the learner's solfège request). Each tap remounts the note engine, which is how a note left halfway is dropped. The meter is a little shorter on Pick a note so the keys, meter and Hear it again fit on a phone screen.

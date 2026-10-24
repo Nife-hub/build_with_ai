@@ -540,6 +540,72 @@
   bottom: 10px;
 }
 
+/* Pick a note: 8 piano-style white keys (two rows of 4 on phones) */
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 480px) {
+  .keys {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+.key {
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  height: 76px;
+  padding: 0 0 10px;
+  border: 1px solid var(--border);
+  border-bottom-width: 4px;
+  border-radius: 10px 10px 14px 14px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.key:active {
+  transform: translateY(2px);
+}
+
+.key:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.key-current {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-color: transparent;
+  box-shadow: var(--glow);
+}
+
+.key-name {
+  font-weight: 800;
+}
+
+.key-solfege {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.pick-prompt {
+  margin: 0;
+  min-height: 2.2rem;
+  display: flex;
+  align-items: center;
+  color: var(--text-quiet);
+  font-weight: 600;
+}
+
 /* Leave dialog */
 .overlay {
   position: fixed;
@@ -590,4 +656,10 @@
   .opening {
     animation: none;
   }
+}
+
+/* Pick a note has keys above the meter, so the meter is a little shorter */
+.pick .meter {
+  height: min(38vh, 380px);
+  min-height: 220px;
 }

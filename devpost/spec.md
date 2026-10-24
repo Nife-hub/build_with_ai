@@ -79,7 +79,7 @@ Carried from `prd.md > Look and Feel`, `scope.md > Inspiration & Identity`, and 
 - **Type:** *Plus Jakarta Sans* from Google Fonts (bold headings, regular body), falling back to the system sans-serif.
 - **Shapes:** rounded cards (about 20px corners), pill-shaped buttons, generous spacing, a few soft background circles, and a waveform/music-note motif near the PitchPal name drawn as simple inline SVG. A friendly headset illustration on a soft blob sits at the top of Home and the opening screen, and faint music notes drift in the background of every screen (added in slice 4 after the learner found the look a little plain).
 - **Practice and Pick a note focus:** the target line and dot take up most of the screen. The note name, counters, Listen/Sing cue, how-close message, Hear it again and Back are small and quiet. The note name is the largest of those small items so it's easy to learn from.
-- **Note keys (Pick a note):** 8 rounded, piano-style key buttons in one row (wrapping to two rows on narrow phones), each labeled "C4"… "C5". The picked key is highlighted in teal (light) or the gradient (dark).
+- **Note keys (Pick a note):** 8 rounded, piano-style key buttons in one row (wrapping to two rows on narrow phones), each labeled "C4"… "C5" with its solfège underneath (e.g. "C4 / Do"). The picked key is highlighted in teal (light) or the peach-to-amber gradient (dark).
 - **Copy:** plain and encouraging. The only music terms are note names, with a one-time hint: "The number shows how high: 4 is the middle of the piano."
 
 ## Components

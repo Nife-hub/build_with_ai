@@ -1,10 +1,11 @@
-// Screen switcher: Opening → Home → the round → its results. Also holds the theme.
+// Screen switcher: Opening → Home → the round and its results, or Pick a note. Also holds the theme.
 import { useEffect, useState } from 'react';
 import FloatingNotes from './components/FloatingNotes.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import Waveform from './components/Waveform.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import OpeningScreen from './screens/OpeningScreen.jsx';
+import PickNoteScreen from './screens/PickNoteScreen.jsx';
 import PracticeScreen from './screens/PracticeScreen.jsx';
 import ResultsScreen from './screens/ResultsScreen.jsx';
 import { startMic, stopMic } from './audio/mic.js';
@@ -13,12 +14,12 @@ import { stopNote } from './audio/tone.js';
 const OPENING_SECONDS = 2.5;
 
 export default function App() {
-  const [screen, setScreen] = useState('opening'); // opening | home | practice | results
+  const [screen, setScreen] = useState('opening'); // opening | home | practice | results | pick
   const [theme, setTheme] = useState(() =>
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   );
   const [micRefused, setMicRefused] = useState(false);
-  const [round, setRound] = useState(0); // goes up so Play again starts a fresh round
+  const [round, setRound] = useState(0); // goes up so each Start / Pick a note begins fresh
   const [record, setRecord] = useState([]);
   const [showHint, setShowHint] = useState(true); // the note-number hint shows once per visit
 
@@ -33,7 +34,8 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [screen]);
 
-  async function handleStart() {
+  // Start and Pick a note both ask for the mic first (straight from the tap).
+  async function openWithMic(next) {
     const mic = await startMic();
     setMicRefused(mic === 'refused');
     if (mic === 'refused') {
@@ -41,8 +43,10 @@ export default function App() {
       return;
     }
     setRound((r) => r + 1);
-    setScreen('practice');
+    setScreen(next);
   }
+
+  const handleStart = () => openWithMic('practice');
 
   // Leaving the round or finishing it: stop the note and release the mic.
   function stopAudio() {
@@ -83,7 +87,23 @@ export default function App() {
         <main className="screen">
           {screen === 'opening' && <OpeningScreen />}
 
-          {screen === 'home' && <HomeScreen micRefused={micRefused} onStart={handleStart} />}
+          {screen === 'home' && (
+            <HomeScreen
+              micRefused={micRefused}
+              onStart={handleStart}
+              onPickNote={() => openWithMic('pick')}
+            />
+          )}
+
+          {screen === 'pick' && (
+            <PickNoteScreen
+              key={round}
+              showHint={showHint}
+              onHintSeen={() => setShowHint(false)}
+              onLeave={stopAudio}
+              onHome={() => setScreen('home')}
+            />
+          )}
 
           {screen === 'practice' && (
             <PracticeScreen

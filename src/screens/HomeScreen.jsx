@@ -37,7 +37,7 @@ const STEPS = [
   },
 ];
 
-export default function HomeScreen({ micRefused, onStart }) {
+export default function HomeScreen({ micRefused, onStart, onPickNote }) {
   return (
     <section className="home">
       <div className="home-hero">
@@ -76,9 +76,7 @@ export default function HomeScreen({ micRefused, onStart }) {
 
       <div className="home-actions">
         <button className="btn btn-main btn-wide" onClick={onStart}>Start</button>
-        <button className="btn btn-small btn-wide" disabled title="Coming soon">
-          Pick a note
-        </button>
+        <button className="btn btn-small btn-wide" onClick={onPickNote}>Pick a note</button>
       </div>
     </section>
   );
