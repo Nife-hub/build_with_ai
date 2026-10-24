@@ -286,9 +286,10 @@
 
 .opening-name {
   margin: 6px 0 0;
+  font-family: 'Fredoka', 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: clamp(2.6rem, 11vw, 3.6rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .opening-tagline {
@@ -666,7 +667,6 @@
 
 /* Display font: a retro, record-sleeve feel for big text. Everyday text stays in Plus Jakarta Sans. */
 .logo-name,
-.opening-name,
 .note-name,
 .solfege,
 .score,
@@ -720,25 +720,25 @@
 .home-hero .quiet,
 .step-title,
 .step-text {
-  font-family: 'Fredoka', 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: 'Caveat', 'Plus Jakarta Sans', system-ui, sans-serif;
   letter-spacing: 0;
 }
 
 .headline {
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .home-hero .quiet {
-  font-size: 1.05rem;
-  font-weight: 400;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .step-title {
-  font-size: 1.05rem;
-  font-weight: 500;
+  font-size: 1.20rem;
+  font-weight: 700;
 }
 
 .step-text {
-  font-size: 0.95rem;
-  font-weight: 400;
+  font-size: 1.05rem;
+  font-weight: 700;
 }

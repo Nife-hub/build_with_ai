@@ -38,7 +38,7 @@
 :root[data-theme='dark'] {
   --bg: #0b1618;
   --card: #122327;
-  --text: #eef5f3;
+  --text: #9fd3c4;
   --text-quiet: #9db3b2;
   --accent: #f4b183;
   --accent-bg: linear-gradient(135deg, #ee9a62, #f7c27e);
