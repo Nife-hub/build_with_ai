@@ -79,13 +79,13 @@ Build mode: learn
 ## Code Tour and App Map
 
 - [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
 - [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
 Activity and evidence: guided route following the learner's own "one long breath used all 3 tries" fix; the learner ran the app, sang a long breath, and found all three code locations (session 3).
 Route and stops: (1) `src/hooks/useNoteAttempt.js` `const tick` (mic → how far off → dot → try rules); (2) `src/lib/attempt.js` "Waiting for the singer to start" (the pause-before-next-try rule, timing constants); (3) `src/components/NotePanel.jsx` `countdown` and `messageFor` (what the singer sees). All completed.
 Edit outcome: learner reworded the try-used message to "Take a breath and let's try again." (kept, verified, commit 45ff7fc), then made further changes on their own: Caveat for Home's text, mint dark-mode text, lighter opening heading (commit ef51f50).
-Reflection:
+Reflection: transfer question offered; learner declined.
 Activity mode: guided route (default for a learner new to planning). App map: `devpost/app-map.html`, generated from commit ef51f50, checked offline in light and dark with scripts off (no network requests, no sideways scroll).
 
 ## Revisions
