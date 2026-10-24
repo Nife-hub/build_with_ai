@@ -35,7 +35,7 @@ Source: `scope.md > The Core Loop`, `scope.md > What "Working" Looks Like`.
 Source: `scope.md > Inspiration & Identity`; visual reference `devpost/look-reference.png`. The learner likes **everything** about that reference: colors, background, shapes and fonts. Overall feel: **a cool musical vibe, sleek.**
 
 - **Light theme:** warm cream/off-white background, deep teal for main buttons and highlights, soft peach and teal circles as decoration.
-- **Dark theme:** near-black navy background, glowing blue-to-purple gradients on buttons and highlights, a subtle neon glow.
+- **Dark theme:** near-black midnight teal background, glowing peach-to-amber gradients on buttons and highlights, soft teal and amber glows. (Changed during `5-build`: the learner found the original blue-to-purple too cliché; maroon and burgundy were tried before settling on teal and amber, which matches the light theme's teal and peach.)
 - **Shapes:** rounded cards, pill-shaped buttons, generous spacing, waveform and music-note motifs.
 - **Type:** clean, bold, modern sans-serif. Big confident headings, small quiet supporting text.
 - **Focus:** one big thing in the middle of each screen (like the reference's "Tap Here" circle). On the practice screen that's the target line and the dot. Buttons and score stay small and calm.

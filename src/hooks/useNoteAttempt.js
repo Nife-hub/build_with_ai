@@ -30,7 +30,6 @@ export function useNoteAttempt(note, onDone) {
   const [off, setOff] = useState(null);
   const [notice, setNotice] = useState(null); // after a try: { silent } or { missed, avgOff }
   const [secondsLeft, setSecondsLeft] = useState(null); // countdown while singing, null otherwise
-  const [debug, setDebug] = useState({ volume: 0, clarity: 0, rawPitch: 0, heardShare: 0 });
 
   const triesUsed = useRef(0);
   const missedTries = useRef([]);
@@ -75,29 +74,11 @@ export function useNoteAttempt(note, onDone) {
     const glider = createGlider(0.35);
     const gate = createSteadyGate();
     let lastHeardAt = 0;
-    let lastDebugAt = 0;
-    let recent = [];
     let frame;
 
     const tick = () => {
       const now = performance.now();
       const reading = readPitch();
-
-      // Tuning panel: the strongest loudness and best clarity from the last 2 seconds.
-      recent.push({ ...reading, at: now });
-      recent = recent.filter((r) => now - r.at < 2000);
-      if (now - lastDebugAt > 250) {
-        const clearest = recent
-          .filter((r) => r.voiceRange)
-          .reduce((a, b) => (b.clarity > a.clarity ? b : a), { clarity: 0, rawPitch: 0 });
-        setDebug({
-          volume: Math.max(...recent.map((r) => r.volume)),
-          clarity: clearest.clarity,
-          rawPitch: clearest.rawPitch,
-          heardShare: recent.filter((r) => r.pitch).length / recent.length,
-        });
-        lastDebugAt = now;
-      }
 
       // Only a held, steady note moves the dot; talking and coughs stay hidden.
       let heard = null;
@@ -205,7 +186,6 @@ export function useNoteAttempt(note, onDone) {
     secondsLeft,
     off,
     message: messageFor(phase, off, notice),
-    debug,
     hearAgain,
     tryAgain,
     skip,
