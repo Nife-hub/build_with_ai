@@ -15,7 +15,7 @@ Source: `scope.md > The Core Loop`, `scope.md > What "Working" Looks Like`.
 2. **Home screen.** A short how-to explains the three steps, **Listen → Sing it back → Watch the dot**, above a **Start** button. A light/dark theme toggle is available.
 3. **Start a round.** The singer presses **Start**. The microphone is needed, so if they haven't allowed it yet, the device asks now.
 4. **Listen.** PitchPal plays the note for a few seconds.
-5. **Sing.** When the note stops, the singer's try begins. Each try lasts about **5 seconds**. While they sing, a dot floats **above** or **below** a big target line, and a message says how close they are (too high / too low).
+5. **Sing.** When the note stops, PitchPal waits for the singer. A try is **one sung attempt**: it starts when they start singing and ends when they stop (about a second of quiet), or after about **10 seconds** of singing. When a try ends, the screen says the try was used (e.g. "Try 1 of 3 used"), and the next try only starts once they pause and sing again, so one long breath can't use up several tries. While they sing, a dot floats **above** or **below** a big target line, and a message says how close they are (too high / too low).
 6. **Hit it.** If the singer holds the note on the line for **at least 3 seconds** without drifting off, the dot turns green and **"You nailed it, well done!"** pops up. The note counts as a **pass**, and the round moves to the next note.
 7. **Miss it.** If a try ends without a hit, the next try starts. Each note gets **3 tries**.
 8. **Out of tries.** After 3 missed tries, they see that they missed all three, with an encouraging message and two choices: **Try again** (same note, 3 fresh tries) or **Skip** (move on).
@@ -73,7 +73,9 @@ Source: `scope.md > The Unique Kernel`, `scope.md > What "Working" Looks Like`.
 - [ ] After a hit, the note is recorded as a pass and the next note begins.
 
 ### Tries, Retry and Skip
-- [ ] Each note allows 3 tries of about 5 seconds each, and the screen shows which try they're on.
+- [ ] Each note allows 3 tries. A try starts when the singer starts singing and ends when they stop (about a second of quiet) or after about 10 seconds of singing. The screen shows which try they're on.
+- [ ] While singing, a small countdown (e.g. "7s left") shows how much of the 10 seconds is left.
+- [ ] When a try ends, a message says that try was used (e.g. "Try 1 of 3 used. You were mostly low."). The next try doesn't start until the singer pauses and sings again.
 - [ ] After 3 missed tries, a message says they missed all three, adds encouragement, and offers **Try again** and **Skip**.
 - [ ] **Try again** plays the same note again with 3 fresh tries. A hit after retrying counts as a pass.
 - [ ] **Skip** moves on to the next note. The skipped note counts as a miss.
@@ -118,7 +120,7 @@ Source: `scope.md > The POC Boundary`.
 
 - **Opening screen with name and tagline** — gives the app an identity before anything happens.
 - **Home has a 3-step how-to** — a first-timer should understand "listen, sing it back, watch the dot" before pressing Start.
-- **3 tries of ~5 seconds per note** — gives room to adjust (the whole point) while keeping a round short.
+- **3 tries per note; a try is one sung attempt (ends when the singer stops, or after ~10 seconds)** — gives room to adjust (the whole point) while keeping a round short. Changed during `5-build` (learner request): fixed 5-second tries let one long breath use up all three tries.
 - **A hit means holding the note for 3 seconds** — so a passing wobble isn't a fake "nailed it."
 - **Try again = same note, 3 fresh tries, still counts as a pass** — the score rewards getting there, not getting it first time.
 - **Skip is allowed** — no one gets stuck on a note.

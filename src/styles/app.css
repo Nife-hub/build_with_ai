@@ -123,6 +123,12 @@
   color: var(--accent);
 }
 
+.countdown {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-quiet);
+}
+
 .message {
   text-align: center;
   font-weight: 600;

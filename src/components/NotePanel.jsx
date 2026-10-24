@@ -13,7 +13,7 @@ const CUES = {
 
 // `attempt` is what useNoteAttempt returns.
 export default function NotePanel({ note, attempt, showHint }) {
-  const { phase, tryNumber, off, message } = attempt;
+  const { phase, tryNumber, secondsLeft, off, message } = attempt;
   const showDot = phase === 'sing' || phase === 'hit';
 
   return (
@@ -30,6 +30,11 @@ export default function NotePanel({ note, attempt, showHint }) {
           {(phase === 'listen' || phase === 'sing') && (
             <span className="try-count">
               Try {tryNumber} of {TRIES}
+            </span>
+          )}
+          {phase === 'sing' && secondsLeft !== null && (
+            <span className="countdown" aria-live="off">
+              {secondsLeft}s left
             </span>
           )}
         </div>

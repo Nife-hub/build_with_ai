@@ -30,10 +30,10 @@ PRD ref: `prd.md > The Core Journey`.
 2. **Home.** `HomeScreen` shows the three steps, **Start** and **Pick a note**. The `ThemeToggle` switches light/dark.
 3. **Start.** Pressing Start (or Pick a note) does two things that browsers only allow right after a tap: it wakes up the sound engine and asks for the microphone (`audio/mic.js`). If the singer refuses, `HomeScreen` shows the "microphone needed" message. If they allow it, `App` switches to `PracticeScreen`, which shuffles the 5 round notes (`lib/notes.js`).
 4. **Listen.** The note engine (`hooks/useNoteAttempt.js`) shows a "Listen" cue and the note name (e.g. "A3"), and `audio/tone.js` plays the tone for about 2.5 seconds. The mic is ignored while it plays, so the app doesn't hear its own tone.
-5. **Sing.** The cue changes to "Sing now" and a 5-second try begins. About 60 times a second, `audio/pitch.js` reads the mic, checks loudness and clarity, and gets the sung pitch from pitchy. `lib/notes.js` picks the closest of the target, an octave down, or an octave up, and works out "how far above or below." That moves the dot in `PitchMeter` and updates the how-close message (too high / too low).
+5. **Sing.** The cue changes to "Sing now" and the try waits for the singer; it starts when they start singing. About 60 times a second, `audio/pitch.js` reads the mic, checks loudness and clarity, and gets the sung pitch from pitchy. `lib/notes.js` picks the closest of the target, an octave down, or an octave up, and works out "how far above or below." That moves the dot in `PitchMeter` and updates the how-close message (too high / too low).
 6. **Hear it again (any time while singing).** The engine stops listening, replays the note through `audio/tone.js`, and restarts the same try without using it up.
 7. **Hit.** The engine counts how long the singer has stayed in the zone without a break. At 3 seconds, the dot turns green, "You nailed it, well done!" appears, the note is recorded as a pass, and `PracticeScreen` moves to the next note (step 4).
-8. **Miss.** If the 5 seconds run out without a hit, the try is recorded as a miss, along with whether the singer was mostly high or low, and the next try starts at step 5. If the whole try was silent, the "I can't hear you" message shows instead and the try doesn't count.
+8. **Miss.** If the singer stops (about 1 second of quiet) or sings for 10 seconds without a hit, the try is recorded as a miss, along with whether the singer was mostly high or low. A "Try N of 3 used" message shows, and the next try starts only after a short pause (0.5 s) when they sing again. If nothing is heard for 5 seconds, the "I can't hear you" message shows instead and the try doesn't count.
 9. **Out of tries.** After 3 counted misses, the missed-all-three message appears with **Try again** (back to step 4, same note, 3 fresh tries) and **Skip** (the note counts as a miss and the next note starts).
 10. **Leaving early (any time during the round).** The small **Back** button pauses the round: the tone stops, mic readings are ignored, and the timers freeze. `LeaveDialog` asks "Leave this round? Your progress won't be saved." **Leave** releases the mic, throws away the round record, and `App` shows Home. **Keep practicing** closes the dialog and restarts the current try, or replays the note if it was playing. Tries already used stay used.
 11. **Results.** After 5 notes, `App` switches to `ResultsScreen`, which uses `lib/scoring.js` to show "3/5 on pitch, mostly sang low," plus **Play again** (new round, step 4) and **Home**.
@@ -97,7 +97,7 @@ Name, the three steps (Listen → Sing it back → Watch the dot), **Start**, **
 PRD ref: `prd.md > Opening and Home`, `prd.md > Pick a Note`, `prd.md > States and Boundaries` (first use, microphone refused).
 
 ### Note engine — `hooks/useNoteAttempt.js`
-A React **hook** (a reusable bundle of behavior that screens can plug in) that runs one note from start to finish: listen → up to 3 counted tries of 5 seconds → the 3-second hold → hit, or out of tries → Try again / Skip. It handles silent tries (shown, not counted), Hear it again (replay, restart the try, don't count it), and pause/resume for the Back question. It gives the screen what to draw (phase, try number, how far off, message) and reports the outcome: `{ passed, missedTries }`. Used by both `PracticeScreen` and `PickNoteScreen`.
+A React **hook** (a reusable bundle of behavior that screens can plug in) that runs one note from start to finish: listen → up to 3 counted tries (each one sung attempt: ends when the singer stops, or after 10 seconds) → the 3-second hold → hit, or out of tries → Try again / Skip. It handles silent tries (shown, not counted), Hear it again (replay, restart the try, don't count it), and pause/resume for the Back question. It gives the screen what to draw (phase, try number, how far off, message) and reports the outcome: `{ passed, missedTries }`. Used by both `PracticeScreen` and `PickNoteScreen`.
 PRD ref: `prd.md > Playing the Note`, `prd.md > Note Name and Hear It Again`, `prd.md > Hitting the Note`, `prd.md > Tries, Retry and Skip`, `prd.md > States and Boundaries` (silence, hit, out of tries).
 
 ### PracticeScreen (the round)
@@ -219,7 +219,7 @@ build_with_ai/                  # project folder = the GitHub repository
 │   │   └── pitch.js            # loudness + clarity checks, pitchy → sung pitch
 │   ├── lib/
 │   │   ├── notes.js            # note list, semitone maths, octave rule, ZONE, smoothing
-│   │   ├── attempt.js          # one try's timing: 5 s try, 3 s hold, silent try (no React, testable)
+│   │   ├── attempt.js          # one try's timing: one sung attempt (stop or 10 s), 3 s hold, silent try (no React, testable)
 │   │   └── scoring.js          # passes out of N + "mostly sang low/high"
 │   └── styles/
 │       ├── theme.css           # light/dark color variables, fonts
@@ -274,7 +274,7 @@ build_with_ai/                  # project folder = the GitHub repository
 
 **Scope note:** Note names, Hear it again and Pick a note go beyond `scope.md > The POC Boundary`. The learner chose to add them, and they're recorded in `prd.md`. **Build order:** the 5-note round with the dot comes first; Pick a note is built after the round works, so the core demo is safe if time runs short.
 
-**Implementation details derived from those choices (agent):** Vite, plain JavaScript, plain CSS variables, no router, a shared `useNoteAttempt` hook, triangle-wave tone, Plus Jakarta Sans, G3–D4 round notes, semitone maths, 5-reading smoothing, timings (2.5 s opening, 2.5 s note, 5 s try, 3 s hold), and Pick a note abandoning a half-finished note when another key is tapped.
+**Implementation details derived from those choices (agent):** Vite, plain JavaScript, plain CSS variables, no router, a shared `useNoteAttempt` hook, triangle-wave tone, Plus Jakarta Sans, G3–D4 round notes, semitone maths, 5-reading smoothing, timings (2.5 s opening, 2.5 s note, 3 s hold; a try ends after 1 s of quiet or 10 s of singing, 5 s of silence = silent try), and Pick a note abandoning a half-finished note when another key is tapped.
 
 **The learner's useful unknown — "how does it know I'm singing a note at all?"**
 Clarified in conversation: every slice of sound must pass two checks, **loud enough** (otherwise it's room noise or silence) and **clear enough**, using pitchy's clarity score (a sung note repeats evenly while noise doesn't), plus a human-voice pitch range. **Agreed investigation during the build:** a temporary on-screen readout of loudness, clarity and pitch while the learner sings in their own room. The learner and agent adjust `MIN_VOLUME` and `MIN_CLARITY` until the dot ignores breaths and coughs but follows singing. The readout is removed afterwards. Evidence of success: the dot stays hidden in a quiet room and while coughing, and follows a held "ahh."

@@ -1,5 +1,5 @@
 // The note engine: runs one note from start to finish.
-// Listen → up to 3 tries of 5 seconds → hold on the line for 3 seconds → nailed it,
+// Listen → up to 3 sung tries (each ends when the singer stops, or after 10 s) → hold on the line for 3 seconds → nailed it,
 // or out of tries → Try again / Skip. Shared by the round and Pick a note.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { playNote, stopNote } from '../audio/tone.js';
@@ -29,6 +29,7 @@ export function useNoteAttempt(note, onDone) {
   const [tryKey, setTryKey] = useState(0); // goes up to start a fresh try
   const [off, setOff] = useState(null);
   const [notice, setNotice] = useState(null); // after a try: { silent } or { missed, avgOff }
+  const [secondsLeft, setSecondsLeft] = useState(null); // countdown while singing, null otherwise
   const [debug, setDebug] = useState({ volume: 0, clarity: 0, rawPitch: 0, heardShare: 0 });
 
   const triesUsed = useRef(0);
@@ -66,8 +67,10 @@ export function useNoteAttempt(note, onDone) {
 
   // While singing, read the mic about 60 times a second, move the dot and time the try.
   useEffect(() => {
+    setSecondsLeft(null);
     if (phase !== 'sing') return;
-    const attempt = createTry(performance.now());
+    // After a used try, the next one only starts once the singer has paused.
+    const attempt = createTry(performance.now(), { afterTry: notice?.missed });
     const smoother = createSmoother(9);
     const glider = createGlider(0.35);
     const gate = createSteadyGate();
@@ -102,7 +105,6 @@ export function useNoteAttempt(note, onDone) {
         heard = glider.add(offFromTarget(smoother.add(reading.pitch), note.freq), now);
         lastHeardAt = now;
         setOff(heard);
-        setNotice(null);
       } else if (now - lastHeardAt > HEARD_GRACE) {
         // Only hide the dot after a short gap, so a wobble doesn't make it blink.
         smoother.reset();
@@ -111,6 +113,10 @@ export function useNoteAttempt(note, onDone) {
       }
 
       const result = attempt.update(heard, now);
+      // The "try used" or "can't hear you" message stays up until the next try starts.
+      if (attempt.started()) setNotice(null);
+      const left = attempt.secondsLeft(now);
+      setSecondsLeft(left === null ? null : Math.ceil(left));
       if (result === 'hit') {
         setPhase('hit');
         return;
@@ -130,7 +136,7 @@ export function useNoteAttempt(note, onDone) {
           setPhase('out');
         } else {
           setTryNumber(triesUsed.current + 1);
-          setNotice({ missed: true, avgOff });
+          setNotice({ missed: true, avgOff, used: triesUsed.current });
           setTryKey((k) => k + 1);
         }
         return;
@@ -196,6 +202,7 @@ export function useNoteAttempt(note, onDone) {
   return {
     phase,
     tryNumber,
+    secondsLeft,
     off,
     message: messageFor(phase, off, notice),
     debug,
@@ -211,11 +218,12 @@ function messageFor(phase, off, notice) {
   if (phase === 'hit') return 'You nailed it, well done!';
   if (phase === 'out') return "You missed all three tries. That's okay, every try is training your ear.";
   if (phase !== 'sing') return '';
-  if (off !== null) return closenessMessage(off);
   if (notice?.silent) return "I can't hear you, try singing louder.";
   if (notice?.missed) {
-    if (Math.abs(notice.avgOff) <= ZONE) return 'So close! Hold it steady on the line this time.';
-    return `Not quite, you were mostly ${notice.avgOff < 0 ? 'low' : 'high'}. Have another go.`;
+    const used = `Try ${notice.used} of ${TRIES} used.`;
+    if (Math.abs(notice.avgOff) <= ZONE) return `${used} So close! Take a breath, then hold it steady on the line.`;
+    return `${used} You were mostly ${notice.avgOff < 0 ? 'low' : 'high'}. Take a breath and sing again.`;
   }
+  if (off !== null) return closenessMessage(off);
   return '';
 }
