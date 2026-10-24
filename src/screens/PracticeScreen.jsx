@@ -1,23 +1,48 @@
-// Practice: runs round notes one at a time through the note engine.
-// (Slice 3 turns this into the 5-note round with a score and a Back button.)
-import { useState } from 'react';
+// The round: 5 shuffled notes, one at a time through the note engine, collecting the
+// round record. Back pauses the note and asks before leaving.
+import { useRef, useState } from 'react';
+import LeaveDialog from '../components/LeaveDialog.jsx';
 import NotePanel from '../components/NotePanel.jsx';
 import { useNoteAttempt } from '../hooks/useNoteAttempt.js';
 import { MIN_CLARITY, MIN_VOLUME } from '../audio/pitch.js';
-import { ROUND_NOTES } from '../lib/notes.js';
+import { ROUND_NOTES, shuffle } from '../lib/notes.js';
 
-export default function PracticeScreen({ showHint, onHintSeen }) {
+export default function PracticeScreen({ showHint, onHintSeen, onFinish, onLeave }) {
+  const [notes] = useState(() => shuffle(ROUND_NOTES));
   const [noteIndex, setNoteIndex] = useState(0);
-  const note = ROUND_NOTES[noteIndex];
+  const [leaving, setLeaving] = useState(false);
+  const record = useRef([]);
+  const note = notes[noteIndex];
 
-  const attempt = useNoteAttempt(note, () => {
+  const attempt = useNoteAttempt(note, ({ passed, missedTries }) => {
     onHintSeen();
-    setNoteIndex((i) => (i + 1) % ROUND_NOTES.length);
+    record.current.push({ target: note.name, freq: note.freq, passed, missedTries });
+    if (noteIndex + 1 >= notes.length) onFinish(record.current);
+    else setNoteIndex(noteIndex + 1);
   });
   const { debug } = attempt;
 
+  function askToLeave() {
+    attempt.pause();
+    setLeaving(true);
+  }
+
+  function keepPracticing() {
+    setLeaving(false);
+    attempt.resume();
+  }
+
   return (
     <section className="practice">
+      <div className="practice-bar">
+        <button className="btn btn-small" onClick={askToLeave} disabled={leaving}>
+          Back
+        </button>
+        <span className="note-count">
+          Note {noteIndex + 1}/{notes.length}
+        </span>
+      </div>
+
       <NotePanel note={note} attempt={attempt} showHint={showHint} />
 
       {/* Temporary readout for tuning the "is this singing?" cut-offs. Removed in slice 4. */}
@@ -36,6 +61,8 @@ export default function PracticeScreen({ showHint, onHintSeen }) {
           <div>Heard {Math.round(debug.heardShare * 100)}% of the last 2 seconds as singing</div>
         </div>
       )}
+
+      {leaving && <LeaveDialog onStay={keepPracticing} onLeave={onLeave} />}
     </section>
   );
 }

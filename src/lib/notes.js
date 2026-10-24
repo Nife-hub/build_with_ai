@@ -29,6 +29,13 @@ export const ZONE = 0.5;
 // How far the meter shows above/below the line before the dot pins to the edge.
 export const METER_RANGE = 3;
 
+// Solfège syllable for a note name, e.g. "G3" → "Sol". Fixed do: C is always Do.
+const SOLFEGE = { C: 'Do', D: 'Re', E: 'Mi', F: 'Fa', G: 'Sol', A: 'La', B: 'Ti' };
+
+export function solfege(name) {
+  return SOLFEGE[name[0]];
+}
+
 // How many semitones the sung pitch is from the target. Positive = too high.
 export function semitonesOff(sung, target) {
   return 12 * Math.log2(sung / target);

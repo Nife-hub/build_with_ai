@@ -57,7 +57,7 @@ Source: `scope.md > The Core Loop`.
 
 ### Note Name and Hear It Again
 Added during `4-spec` review (learner request).
-- [ ] The Practice and Pick a note screens show the current note's name with its number (e.g. "C4"), with a short hint the first time: the number shows how high the note is (4 = the middle of the piano).
+- [ ] The Practice and Pick a note screens show the current note's name with its number and its solfège syllable (e.g. "C4 · Do"), with a short hint the first time: the number shows how high the note is (4 = the middle of the piano).
 - [ ] A **Hear it again** button replays the note. Tapping it during a try stops listening, plays the note, and restarts that try **without using one up**. There's no limit on how often it can be used.
 
 ### Live Pitch Feedback (the dot)
@@ -171,7 +171,7 @@ From `scope.md > Later`:
 
 ## Non-Goals
 - **No saving between sessions** — a per-round score proves the loop (`scope.md > Explicitly Cut`).
-- **No music-theory jargon** — the first user is a struggling singer. Note names like "C4" are the one exception, chosen by the learner as something to learn, with a plain hint.
+- **No music-theory jargon** — the first user is a struggling singer. Note names like "C4" and their solfège syllables (Do Re Mi Fa Sol La Ti, added during `5-build` at the learner's request) are the exceptions, chosen by the learner as something to learn, with a plain hint.
 - **No recording or playback of the singer's voice** — the live dot is the feedback.
 - **No mental-health features** — a separate project (`scope.md > Explicitly Cut`).
 

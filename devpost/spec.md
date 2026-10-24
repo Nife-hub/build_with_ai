@@ -146,6 +146,7 @@ PRD ref: `prd.md > Live Pitch Feedback (the dot)`, `prd.md > States and Boundari
 
 ### Note helpers — `lib/notes.js`
 - **Note list:** name → pitch for the round notes (G3 196.0, A3 220.0, B3 246.9, C4 261.6, D4 293.7) and the Pick a note keys (C4 261.6, D4 293.7, E4 329.6, F4 349.2, G4 392.0, A4 440.0, B4 493.9, C5 523.3). These are vibrations per second.
+- **Solfège (`solfege(name)`):** fixed do, so each letter always has the same syllable: C Do, D Re, E Mi, F Fa, G Sol, A La, B Ti. Shown next to the note name in `NotePanel` (e.g. "G3 · Sol"). Added during `5-build` (learner request); Ti chosen over Si as the common English choir usage.
 - **How far off:** `semitonesOff(sung, target) = 12 × log2(sung ÷ target)`. Positive means too high, negative means too low.
 - **Octave rule (learner decision):** the sung pitch is compared to the target ÷ 2 (an octave lower), the target, and the target × 2 (an octave higher), and the closest one is used. So the right note in any of those three octaves counts, and the dot shows how far off you are from *that* version of the note.
 - **`ZONE`:** how close counts as "on the line" (tuned to ±0.5 semitone in slice 1).

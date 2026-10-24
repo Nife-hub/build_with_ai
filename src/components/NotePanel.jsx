@@ -2,6 +2,7 @@
 // the meter, the how-close message, Hear it again, and Try again / Skip when out of tries.
 import PitchMeter from './PitchMeter.jsx';
 import { TRIES } from '../lib/attempt.js';
+import { solfege } from '../lib/notes.js';
 
 const CUES = {
   listen: 'Listen… (turn your sound up)',
@@ -21,6 +22,7 @@ export default function NotePanel({ note, attempt, showHint }) {
       <div className="practice-top">
         <div>
           <span className="note-name">{note.name}</span>
+          <span className="solfege"> · {solfege(note.name)}</span>
           {showHint && (
             <p className="hint">The number shows how high: 4 is the middle of the piano.</p>
           )}
