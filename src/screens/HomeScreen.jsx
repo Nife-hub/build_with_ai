@@ -1,5 +1,6 @@
 // Home: the three-step how-to, Start, Pick a note, and the mic-refused message.
 import Headphones from '../components/Headphones.jsx';
+import MusicText from '../components/MusicText.jsx';
 
 const STEPS = [
   {
@@ -37,7 +38,17 @@ const STEPS = [
   },
 ];
 
-export default function HomeScreen({ micRefused, onStart, onPickNote }) {
+// What to tell the singer when the microphone can't start (see audio/mic.js).
+const MIC_MESSAGES = {
+  refused:
+    'PitchPal needs your microphone to hear you sing. Allow it in your browser settings and press Start again.',
+  unsupported:
+    "This browser can't use the microphone on this page. Open PitchPal in Chrome or Safari, using an address that starts with https://.",
+  unavailable:
+    "PitchPal couldn't reach a microphone. Check one is connected and no other app is using it, then press Start again.",
+};
+
+export default function HomeScreen({ micProblem, onStart, onPickNote }) {
   return (
     <section className="home">
       <div className="home-hero">
@@ -46,7 +57,7 @@ export default function HomeScreen({ micRefused, onStart, onPickNote }) {
           <Headphones size={170} />
         </div>
         <h2 className="headline">
-          Note by note,
+          <MusicText text="Note by note," />
           <br />
           build your sound.
         </h2>
@@ -67,10 +78,9 @@ export default function HomeScreen({ micRefused, onStart, onPickNote }) {
         ))}
       </ol>
 
-      {micRefused && (
+      {micProblem && (
         <p className="card notice" role="alert">
-          PitchPal needs your microphone to hear you sing. Allow it in your browser settings and
-          press Start again.
+          {MIC_MESSAGES[micProblem]}
         </p>
       )}
 

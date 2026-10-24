@@ -1,6 +1,7 @@
 // Screen switcher: Opening → Home → the round and its results, or Pick a note. Also holds the theme.
 import { useEffect, useState } from 'react';
 import FloatingNotes from './components/FloatingNotes.jsx';
+import MusicText from './components/MusicText.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import Waveform from './components/Waveform.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
@@ -18,7 +19,7 @@ export default function App() {
   const [theme, setTheme] = useState(() =>
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   );
-  const [micRefused, setMicRefused] = useState(false);
+  const [micProblem, setMicProblem] = useState(null); // why the mic couldn't start, or null
   const [round, setRound] = useState(0); // goes up so each Start / Pick a note begins fresh
   const [record, setRecord] = useState([]);
   const [showHint, setShowHint] = useState(true); // the note-number hint shows once per visit
@@ -37,8 +38,8 @@ export default function App() {
   // Start and Pick a note both ask for the mic first (straight from the tap).
   async function openWithMic(next) {
     const mic = await startMic();
-    setMicRefused(mic === 'refused');
-    if (mic === 'refused') {
+    setMicProblem(mic === 'allowed' ? null : mic);
+    if (mic !== 'allowed') {
       setScreen('home');
       return;
     }
@@ -78,7 +79,9 @@ export default function App() {
           <header className="top-bar">
             <span className="logo">
               <Waveform height={22} bars={[0.4, 0.75, 1, 0.6, 0.85, 0.45]} />
-              <span className="logo-name">PitchPal</span>
+              <span className="logo-name">
+                <MusicText text="PitchPal" swap="i" />
+              </span>
             </span>
             <ThemeToggle theme={theme} onToggle={() => setTheme(theme === 'dark' ? 'light' : 'dark')} />
           </header>
@@ -89,7 +92,7 @@ export default function App() {
 
           {screen === 'home' && (
             <HomeScreen
-              micRefused={micRefused}
+              micProblem={micProblem}
               onStart={handleStart}
               onPickNote={() => openWithMic('pick')}
             />

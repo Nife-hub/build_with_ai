@@ -67,11 +67,14 @@ Build mode: learn
 
 - [x] Early usable behavior explored — after slice 1: the learner sings into the live dot and we tune the loudness/clarity cut-offs and the "on the line" zone together
   Done (session 2): learner reported having to sing very close, a jumpy dot that never settled on the line, and a dot hidden most of the time; then that coughs, talking and nearby voices moved the dot. After tuning, the learner confirmed the dot stays on the line, claps/coughs/talking stay hidden, and a held note shows. Settings: MIN_VOLUME 0.002, MIN_CLARITY 0.7 (KEEP_CLARITY 0.5 once singing), ZONE 0.5, mic auto volume on, 4096-sample slices, steady-pitch gate (0.3 s within ±0.75 semitone), gliding dot.
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed
+  Done (session 3): learner explored on laptop and tried the phone; feedback was the phone mic, the font, and a lighter, more playful Home font. All resolved below.
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship (learner: "its ready", session 3)
+- [x] Phone microphone: on the learner's Android phone the mic pop-up was blocked by Android ("the site can't ask for your permission, close any bubbles or overlays from other apps"), which is a phone overlay setting, not an app bug. Mic messages now say why the mic couldn't start (blocked, unsupported browser/page, or no mic reachable); verified with 6 headless-Chrome checks. Resolved for this build; the learner will re-test on the phone after deployment (6-ship) with overlays closed.
+- [x] Font: learner found the type too plain. The logo, note names, scores and keys now use Righteous (retro, record-sleeve feel), and Home's headline, intro line and steps use the lighter, more playful Fredoka (learner follow-up), with some letters drawn as music notes (`components/MusicText.jsx`): the i in PitchPal and the o's in "Note by note"; screen readers hear the real words. Verified with close-up screenshots and all round, Pick a note and mic checks. Learner tried it and confirmed ready.
 
 ## Code Tour and App Map
 
@@ -97,3 +100,4 @@ Activity mode:
 - Slice 4 learner check (learner felt it looked a little plain): added a friendly headset illustration on a soft blob (Home and Opening, `components/Headphones.jsx`), with a sound wave between the cups and floating music notes, plus faint drifting music notes in the background of every screen (`components/FloatingNotes.jsx`), all themed for light and dark and still with reduced motion.
 - Slice 4 learner check (dark theme): the learner found blue-to-purple too cliché. Maroon and then burgundy were tried; on the agent's suggestion the dark theme became midnight teal with peach-to-amber highlights, matching the light theme's teal and peach and keeping the green hit dot easy to see. `prd.md > Look and Feel` and `spec.md > Look and Feel` updated.
 - Slice 5: each key also shows its solfège under the note name (following the learner's solfège request). Each tap remounts the note engine, which is how a note left halfway is dropped. The meter is a little shorter on Pick a note so the keys, meter and Hear it again fit on a phone screen.
+- Final review: a secure phone-testing mode (self-signed https) was tried and removed; a temporary Cloudflare tunnel was then used, and `vite.config.js` now allows `.trycloudflare.com` for that. The phone's mic block turned out to be Android's overlay protection, not the app.

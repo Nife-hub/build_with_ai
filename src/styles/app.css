@@ -663,3 +663,82 @@
   height: min(38vh, 380px);
   min-height: 220px;
 }
+
+/* Display font: a retro, record-sleeve feel for big text. Everyday text stays in Plus Jakarta Sans. */
+.logo-name,
+.opening-name,
+.note-name,
+.solfege,
+.score,
+.key-name {
+  font-family: 'Righteous', 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Letters swapped for music notes (see MusicText.jsx) */
+.music-text {
+  white-space: pre-wrap;
+}
+
+.note-o {
+  display: inline-block;
+  width: 0.62em;
+  height: 1em;
+  margin: 0 0.02em;
+  vertical-align: -0.08em;
+  fill: var(--accent);
+}
+
+.note-i {
+  position: relative;
+  display: inline-block;
+}
+
+.note-i-dot {
+  position: absolute;
+  left: 50%;
+  top: 0.02em;
+  width: 0.36em;
+  height: 0.43em;
+  margin-left: -0.13em; /* centers the note head over the stem of the i */
+  fill: var(--accent);
+}
+
+/* Read by screen readers, hidden on screen */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Home's headline, intro line and steps: rounded and playful (Fredoka), lighter than the logo */
+.headline,
+.home-hero .quiet,
+.step-title,
+.step-text {
+  font-family: 'Fredoka', 'Plus Jakarta Sans', system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+.headline {
+  font-weight: 500;
+}
+
+.home-hero .quiet {
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+.step-title {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.step-text {
+  font-size: 0.95rem;
+  font-weight: 400;
+}
