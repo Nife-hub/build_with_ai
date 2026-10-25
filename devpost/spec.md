@@ -66,6 +66,7 @@ PRD ref: `prd.md > Pick a Note`.
 - **While building (local):** run `npm install` once, then `npm run dev`, and open `http://localhost:5173` in Chrome on the laptop. The mic works on `localhost`.
 - **Online (learner choice: "also online so i and others can use it on a phone"):** hosted on **Netlify** (free plan; recommended, accepted unless the learner prefers Vercel). Connect Netlify to the GitHub repo with build command `npm run build` and publish folder `dist`. Netlify gives a secure `https://…netlify.app` link, which phones need before they'll allow mic access, and it updates automatically on each push to GitHub. Docs: https://docs.netlify.com/welcome/add-new-site/. Set up during `6-ship`.
 - **Required for submission:** a short demo video (screen recording of the core journey while singing, from the local app or the live link) and a public GitHub repository. The Netlify link is extra; it doesn't replace either one.
+- **Sharing links:** public GitHub repository: https://github.com/Nife-hub/build_with_ai (verified public without signing in, `6-ship`). Demo video: not yet recorded. Live app: not yet set up (optional).
 - **Demo to record:** open PitchPal → opening screen → Home → Start → allow mic → listen to the note (name shown) → sing off-pitch so the dot moves above/below → adjust until it turns green and "You nailed it, well done!" appears → finish the round → results. If there's time, show Pick a note: tap a key, sing it, see the running score.
 
 ## Look and Feel
