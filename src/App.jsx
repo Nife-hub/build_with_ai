@@ -22,7 +22,6 @@ export default function App() {
   const [micProblem, setMicProblem] = useState(null); // why the mic couldn't start, or null
   const [round, setRound] = useState(0); // goes up so each Start / Pick a note begins fresh
   const [record, setRecord] = useState([]);
-  const [showHint, setShowHint] = useState(true); // the note-number hint shows once per visit
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -101,8 +100,6 @@ export default function App() {
           {screen === 'pick' && (
             <PickNoteScreen
               key={round}
-              showHint={showHint}
-              onHintSeen={() => setShowHint(false)}
               onLeave={stopAudio}
               onHome={() => setScreen('home')}
             />
@@ -111,8 +108,6 @@ export default function App() {
           {screen === 'practice' && (
             <PracticeScreen
               key={round}
-              showHint={showHint}
-              onHintSeen={() => setShowHint(false)}
               onFinish={handleFinish}
               onLeave={goHome}
             />

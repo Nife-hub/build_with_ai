@@ -57,7 +57,7 @@ Source: `scope.md > The Core Loop`.
 
 ### Note Name and Hear It Again
 Added during `4-spec` review (learner request).
-- [ ] The Practice and Pick a note screens show the current note's name with its number and its solfège syllable (e.g. "C4 · Do"), with a short hint the first time: the number shows how high the note is (4 = the middle of the piano).
+- [ ] The Practice and Pick a note screens show the current note's name with its number and its solfège syllable (e.g. "C4 · Do"), with a short hint under it on every note explaining that note's number (e.g. G3: "The 3 means a little below the middle of the piano."; C4: "The 4 means the middle of the piano."). Changed in `6-ship` at the learner's request: one fixed "4" hint confused beginners when the note was G3.
 - [ ] A **Hear it again** button replays the note. Tapping it during a try stops listening, plays the note, and restarts that try **without using one up**. There's no limit on how often it can be used.
 
 ### Live Pitch Feedback (the dot)

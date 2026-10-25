@@ -6,7 +6,7 @@ import NotePanel from '../components/NotePanel.jsx';
 import { useNoteAttempt } from '../hooks/useNoteAttempt.js';
 import { ROUND_NOTES, shuffle } from '../lib/notes.js';
 
-export default function PracticeScreen({ showHint, onHintSeen, onFinish, onLeave }) {
+export default function PracticeScreen({ onFinish, onLeave }) {
   const [notes] = useState(() => shuffle(ROUND_NOTES));
   const [noteIndex, setNoteIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -14,7 +14,6 @@ export default function PracticeScreen({ showHint, onHintSeen, onFinish, onLeave
   const note = notes[noteIndex];
 
   const attempt = useNoteAttempt(note, ({ passed, missedTries }) => {
-    onHintSeen();
     record.current.push({ target: note.name, freq: note.freq, passed, missedTries });
     if (noteIndex + 1 >= notes.length) onFinish(record.current);
     else setNoteIndex(noteIndex + 1);
@@ -41,7 +40,7 @@ export default function PracticeScreen({ showHint, onHintSeen, onFinish, onLeave
         </span>
       </div>
 
-      <NotePanel note={note} attempt={attempt} showHint={showHint} />
+      <NotePanel note={note} attempt={attempt} />
 
       {leaving && <LeaveDialog onStay={keepPracticing} onLeave={onLeave} />}
     </section>

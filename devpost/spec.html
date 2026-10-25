@@ -220,7 +220,7 @@ input[type=range]{width:100%}
   <details><summary>Note engine <span class="mono">hooks/useNoteAttempt.js</span></summary><p>A React <i>hook</i>: a reusable bundle of behavior that screens plug in. It runs one note from start to finish: listen → 3 counted tries of 5 s → 3 s hold → hit, or Try again / Skip. It handles silence, Hear it again (no try used) and pausing. Shared by both practice screens.</p><p class="ref">prd.md › Playing the Note · Note Name and Hear It Again · Hitting the Note · Tries, Retry and Skip</p></details>
   <details><summary>PracticeScreen <span class="mono">screens/PracticeScreen.jsx</span></summary><p>Shuffles the 5 round notes, runs each through the engine, and keeps the round record. Shows 2/5 and a small Back button that opens LeaveDialog.</p><p class="ref">prd.md › The Core Journey · Leaving a Round Early</p></details>
   <details><summary>PickNoteScreen <span class="mono">screens/PickNoteScreen.jsx</span></summary><p>Keys + engine + a running score ("4 nailed out of 6 notes"). Back stops sound and mic, shows the score card, then Home. A note left halfway isn't counted.</p><p class="ref">prd.md › Pick a Note</p></details>
-  <details><summary>NotePanel <span class="mono">components/NotePanel.jsx</span></summary><p>The shared middle: note name ("C4") with a one-time hint, Listen/Sing cue, try counter, PitchMeter, how-close message, Hear it again, Try again / Skip.</p><p class="ref">prd.md › Note Name and Hear It Again · Tries, Retry and Skip</p></details>
+  <details><summary>NotePanel <span class="mono">components/NotePanel.jsx</span></summary><p>The shared middle: note name ("C4") with the hint for its number, Listen/Sing cue, try counter, PitchMeter, how-close message, Hear it again, Try again / Skip.</p><p class="ref">prd.md › Note Name and Hear It Again · Tries, Retry and Skip</p></details>
   <details><summary>PitchMeter <span class="mono">components/PitchMeter.jsx</span></summary><p>Target line + dot, up to 3 semitones either way (pinned beyond that). Green on a hit, hidden when no voice is heard.</p><p class="ref">prd.md › Live Pitch Feedback (the dot) · Hitting the Note</p></details>
   <details><summary>NoteKeys <span class="mono">components/NoteKeys.jsx</span></summary><p>8 labeled white keys, C4 to C5. Wraps to two rows on narrow phones.</p><p class="ref">prd.md › Pick a Note</p></details>
   <details><summary>LeaveDialog <span class="mono">components/LeaveDialog.jsx</span></summary><p>"Leave this round? Your progress won't be saved." Keep practicing (main) / Leave (quieter).</p><p class="ref">prd.md › Leaving a Round Early</p></details>
@@ -244,7 +244,6 @@ input[type=range]{width:100%}
     <tr><td>Phase, try #, live "how far off", hold timer</td><td>Note engine</td><td>~60× a second + buttons</td><td>gone</td></tr>
     <tr><td>Round record</td><td>PracticeScreen → App</td><td>after each note</td><td>gone</td></tr>
     <tr><td>Pick a note record</td><td>PickNoteScreen</td><td>after each finished note</td><td>gone</td></tr>
-    <tr><td>Seen the "4 = middle" hint</td><td>App</td><td>first note name shown</td><td>shows again</td></tr>
   </table></div>
 </section>
 

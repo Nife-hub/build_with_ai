@@ -7,7 +7,7 @@ import PitchMeter from '../components/PitchMeter.jsx';
 import { useNoteAttempt } from '../hooks/useNoteAttempt.js';
 import { summarize } from '../lib/scoring.js';
 
-export default function PickNoteScreen({ showHint, onHintSeen, onLeave, onHome }) {
+export default function PickNoteScreen({ onLeave, onHome }) {
   const [picked, setPicked] = useState(null); // the note being practiced, or null between notes
   const [pickCount, setPickCount] = useState(0); // goes up so each tap starts a fresh note
   const [finished, setFinished] = useState([]); // finished notes, for the score
@@ -21,7 +21,6 @@ export default function PickNoteScreen({ showHint, onHintSeen, onLeave, onHome }
   }
 
   function handleDone(note, { passed, missedTries }) {
-    onHintSeen();
     record.current = [...record.current, { target: note.name, freq: note.freq, passed, missedTries }];
     setFinished(record.current);
     setPicked(null);
@@ -56,7 +55,6 @@ export default function PickNoteScreen({ showHint, onHintSeen, onLeave, onHome }
         <PickedNote
           key={pickCount}
           note={picked}
-          showHint={showHint}
           onDone={(outcome) => handleDone(picked, outcome)}
         />
       ) : (
@@ -70,9 +68,9 @@ export default function PickNoteScreen({ showHint, onHintSeen, onLeave, onHome }
 }
 
 // One picked note running through the note engine. A new key remounts it (fresh note).
-function PickedNote({ note, showHint, onDone }) {
+function PickedNote({ note, onDone }) {
   const attempt = useNoteAttempt(note, onDone);
-  return <NotePanel note={note} attempt={attempt} showHint={showHint} />;
+  return <NotePanel note={note} attempt={attempt} />;
 }
 
 function ScoreCard({ record, onHome }) {

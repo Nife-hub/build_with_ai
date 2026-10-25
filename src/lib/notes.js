@@ -36,6 +36,14 @@ export function solfege(name) {
   return SOLFEGE[name[0]];
 }
 
+// What the number in a note name means, e.g. "G3" → "The 3 means a little below the middle of the piano."
+const HEIGHT = { 3: 'a little below the middle', 4: 'the middle', 5: 'a little above the middle' };
+
+export function heightHint(name) {
+  const number = name.slice(1);
+  return `The ${number} means ${HEIGHT[number]} of the piano.`;
+}
+
 // How many semitones the sung pitch is from the target. Positive = too high.
 export function semitonesOff(sung, target) {
   return 12 * Math.log2(sung / target);

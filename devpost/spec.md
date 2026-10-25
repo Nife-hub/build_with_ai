@@ -81,7 +81,7 @@ Carried from `prd.md > Look and Feel`, `scope.md > Inspiration & Identity`, and 
 - **Shapes:** rounded cards (about 20px corners), pill-shaped buttons, generous spacing, a few soft background circles, and a waveform/music-note motif near the PitchPal name drawn as simple inline SVG. A friendly headset illustration on a soft blob sits at the top of Home and the opening screen, and faint music notes drift in the background of every screen (added in slice 4 after the learner found the look a little plain).
 - **Practice and Pick a note focus:** the target line and dot take up most of the screen. The note name, counters, Listen/Sing cue, how-close message, Hear it again and Back are small and quiet. The note name is the largest of those small items so it's easy to learn from.
 - **Note keys (Pick a note):** 8 rounded, piano-style key buttons in one row (wrapping to two rows on narrow phones), each labeled "C4"… "C5" with its solfège underneath (e.g. "C4 / Do"). The picked key is highlighted in teal (light) or the peach-to-amber gradient (dark).
-- **Copy:** plain and encouraging. The only music terms are note names, with a one-time hint: "The number shows how high: 4 is the middle of the piano."
+- **Copy:** plain and encouraging. The only music terms are note names, with a hint on every note that matches its number, from `heightHint()` in `lib/notes.js` (3: "a little below the middle", 4: "the middle", 5: "a little above the middle" of the piano).
 
 ## Components
 
@@ -110,7 +110,7 @@ Shows `NoteKeys`, runs the tapped note through the note engine, and keeps a runn
 PRD ref: `prd.md > Pick a Note`.
 
 ### NotePanel
-The shared middle of both practice screens: the note name (e.g. "C4") with the one-time hint, the Listen/Sing cue, the try counter, `PitchMeter`, the how-close message, **Hear it again**, and the out-of-tries panel with Try again / Skip.
+The shared middle of both practice screens: the note name (e.g. "C4") with the hint for its number, the Listen/Sing cue, the try counter, `PitchMeter`, the how-close message, **Hear it again**, and the out-of-tries panel with Try again / Skip.
 PRD ref: `prd.md > Note Name and Hear It Again`, `prd.md > Tries, Retry and Skip`.
 
 ### PitchMeter (target line + dot)
@@ -168,7 +168,6 @@ Everything lives in the app's memory (React state) while the page is open. Nothi
 |---|---|---|---|
 | Current screen | `App` | timer, Start, Pick a note, end of round, Back, Home | resets to Opening |
 | Theme | `App` → `data-theme` on the page | ThemeToggle | resets to device setting |
-| Has seen the note-number hint | `App` | first time a note name shows | shows again next visit |
 | Round notes, current note # | `PracticeScreen` | picked when the round starts | new round, new order |
 | Phase (listen / sing / hit / out-of-tries / paused), try #, live "how far off", hold timer | note engine (`useNoteAttempt`) | timers, mic readings (~60×/s), buttons | gone |
 | Round record | `PracticeScreen`, handed to `App` at the end | after each note | gone |
