@@ -9,3 +9,7 @@
 # Downloaded libraries and the packaged site (both are re-created by npm)
 node_modules/
 dist/
+
+# Shipping notes with draft wording, and demo recordings (too big for the repo)
+/devpost/ship-notes.md
+*.mp4
